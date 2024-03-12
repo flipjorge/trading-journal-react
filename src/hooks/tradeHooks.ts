@@ -9,7 +9,9 @@ export const useGetAllTrades = () => {
 
 export const useGetTradesBySymbol = (symbol:string) => {
     const trades = useGetAllTrades();
-    return trades.filter(trade => trade.symbol === symbol);
+    return useMemo(() =>
+        trades.filter(trade => trade.symbol === symbol)
+    ,[trades, symbol]);
 }
 
 export const useTradeFirstDate = (trade:Trade) => {
