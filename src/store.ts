@@ -1,8 +1,12 @@
-import { configureStore } from "@reduxjs/toolkit";
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import tradesReducer from './slices/tradesSlice';
 
+const rootReducer = combineReducers({
+    trades:tradesReducer
+})
+
 export const store = configureStore({
-    reducer: {
-        trades: tradesReducer
-    }
+    reducer: rootReducer
 });
+
+export type RootState = ReturnType<typeof rootReducer>;
