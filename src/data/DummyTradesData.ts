@@ -28,7 +28,7 @@ const dummyData:Trade[] = [
             action:'buy',
             datetime: new Date("2024-03-11 14:30:00"),
             price: 12000,
-            quantity: 1,
+            quantity: 1.6,
             fee: 0.0001
         },{
             id:1,
@@ -42,7 +42,7 @@ const dummyData:Trade[] = [
             action:'sell',
             datetime: new Date("2024-03-11 14:50:00"),
             price: 14450,
-            quantity: 0.4,
+            quantity: 1,
             fee: 0.00011
         }]
     },{
@@ -53,7 +53,7 @@ const dummyData:Trade[] = [
             action:'buy',
             datetime: new Date("2024-03-12 10:15:00"),
             price: 1700,
-            quantity: 2,
+            quantity: 3,
             fee: 0.02
         }]
     }
