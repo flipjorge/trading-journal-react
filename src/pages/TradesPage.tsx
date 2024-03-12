@@ -1,5 +1,7 @@
 import styled from "styled-components";
 import AddTradeButton from "../components/AddTradeButton";
+import TradesList from "../components/TradesList";
+import { useGetAllTrades } from "../hooks/tradeHooks";
 
 const AddTradeButtonContainer = styled.div`
     position: fixed;
@@ -8,7 +10,11 @@ const AddTradeButtonContainer = styled.div`
 `
 
 const TradesPage = () => {
+
+    const trades = useGetAllTrades();
+
     return <div>
+        <TradesList trades={trades}/>
         <AddTradeButtonContainer>
             <AddTradeButton/>
         </AddTradeButtonContainer>
