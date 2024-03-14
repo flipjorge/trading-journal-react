@@ -1,3 +1,4 @@
+import { FC } from "react";
 import styled from "styled-components";
 
 const Button = styled.a`
@@ -19,8 +20,12 @@ const Button = styled.a`
         }
     `
 
-const AddTradeButton = () => {
-    return <Button>+</Button>
+type AddTradeButtonProps = {
+    onClick:() => void
+}
+
+const AddTradeButton:FC<AddTradeButtonProps> = ({onClick}) => {
+    return <Button onClick={() => onClick()}>+</Button>
 }
 
 export default AddTradeButton;
