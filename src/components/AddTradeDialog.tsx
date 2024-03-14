@@ -1,4 +1,4 @@
-import { FC, FormEvent, useState } from "react";
+import { FormEvent, useState } from "react";
 import styled from "styled-components";
 
 const Dialog = styled.div`
@@ -51,11 +51,7 @@ type PositionItem = {
     fee:number | undefined
 }
 
-type AddTradeDialogProps = {
-    dispatchClose: () => void
-}
-
-const AddTradeDialog:FC<AddTradeDialogProps> = ({dispatchClose}) => {
+const AddTradeDialog = () => {
 
     const [formData, setFormData] = useState<FormData>({
         symbol: '',
@@ -153,7 +149,7 @@ const AddTradeDialog:FC<AddTradeDialogProps> = ({dispatchClose}) => {
         console.log(formData);
     }
 
-    return <Dialog onClick={() => dispatchClose()}>
+    return <Dialog>
         <form onSubmit={handleSubmit}>
             <Title>New Trade</Title>
             <MainInfoGrid>
