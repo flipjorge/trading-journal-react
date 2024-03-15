@@ -4,6 +4,8 @@ import TradesList from "../components/TradesList";
 import { useGetAllTrades } from "../hooks/tradeHooks";
 import AddTradeDialog from "../components/AddTradeDialog";
 import { useRef, useState } from "react";
+import EditTradeDialog from "../components/EditTradeDialog";
+import { Trade } from "../models/Models";
 
 const AddTradeButtonContainer = styled.div`
     position: fixed;
@@ -29,7 +31,10 @@ const TradesPage = () => {
     const trades = useGetAllTrades();
 
     const [isAddTradeDialogVisible, setIsAddTradeDialogVisible] = useState(false);
+    const [isEditTradeDialogVisible, setIsEditTradeDialogVisible] = useState(false);
+    const [selectedTrade, setSelectedTrade] = useState<Trade | undefined>(undefined);
     const addTradeDialogRef = useRef(null);
+    const editTradeDialogRef = useRef(null);
 
     const handleAddTradeOpen = () => {
         setIsAddTradeDialogVisible(true);
@@ -40,12 +45,27 @@ const TradesPage = () => {
         setIsAddTradeDialogVisible(false);
     }
 
+    const handleEditTradeClose = (e:React.MouseEvent) => {
+        if(editTradeDialogRef.current !== e.target) return;
+        setIsEditTradeDialogVisible(false);
+    }
+
+    const handleTradeSelected = (trade:Trade) => {
+        setSelectedTrade(trade);
+        setIsEditTradeDialogVisible(true);
+    }
+
     const handleTradeAdded = () => {
         setIsAddTradeDialogVisible(false);
     }
 
+    const handleTradeEdited = () => {
+        setIsEditTradeDialogVisible(false);
+        setSelectedTrade(undefined);
+    }
+
     return <div>
-        <TradesList trades={trades}/>
+        <TradesList trades={trades} dispatchTradeSelected={handleTradeSelected}/>
         <AddTradeButtonContainer>
             <AddTradeButton onClick={handleAddTradeOpen}/>
         </AddTradeButtonContainer>
@@ -55,6 +75,13 @@ const TradesPage = () => {
             onClick={handleAddTradeClose}>
             <AddTradeDialog dispatchTradeAdded={handleTradeAdded}/>
         </AddTradeDialogContainer>
+        {selectedTrade && 
+        <AddTradeDialogContainer
+            ref={editTradeDialogRef}
+            $isVisible={isEditTradeDialogVisible}
+            onClick={handleEditTradeClose}>
+            <EditTradeDialog trade={selectedTrade} dispatchTradeEdited={handleTradeEdited}/>
+        </AddTradeDialogContainer>}
     </div>;
 }
 
