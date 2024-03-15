@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { RootState } from "../store";
 import { Trade } from "../models/Models";
 import { useMemo } from "react";
-import { addTrade } from "../slices/tradesSlice";
+import { addTrade, updateTrade } from "../slices/tradesSlice";
 
 export const useGetAllTrades = () => {
     return useSelector((state:RootState) => state.trades);
@@ -55,4 +55,10 @@ export const useAddTrade = () => {
     const dispatch = useDispatch();
 
     return (trade:Trade) => dispatch(addTrade(trade));
+}
+
+export const useEditTrade = () => {
+    const dispatch = useDispatch();
+
+    return (trade:Trade) => dispatch(updateTrade(trade));
 }
