@@ -1,7 +1,8 @@
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { RootState } from "../store";
 import { Trade } from "../models/Models";
 import { useMemo } from "react";
+import { addTrade } from "../slices/tradesSlice";
 
 export const useGetAllTrades = () => {
     return useSelector((state:RootState) => state.trades);
@@ -41,4 +42,17 @@ export const useTradeEntryTotal = (trade:Trade) => {
         if(!trade.transactions) return '-';
         return trade.transactions[0].price * trade.transactions[0].quantity;
     }, [trade.transactions]);
+}
+
+export const useGetNextTradeId = () => {
+    const trades = useGetAllTrades();
+    return useMemo(() => {
+        return trades[trades.length-1].id + 1;
+    }, [trades]);
+}
+
+export const useAddTrade = () => {
+    const dispatch = useDispatch();
+
+    return (trade:Trade) => dispatch(addTrade(trade));
 }
