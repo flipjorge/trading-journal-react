@@ -7,7 +7,7 @@ export interface Trade {
 export interface TradeTransaction {
     id: number,
     action: 'buy' | 'sell',
-    datetime: Date,
+    datetime: string,
     quantity: number,
     price: number,
     fee: number

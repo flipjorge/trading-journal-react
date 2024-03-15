@@ -17,7 +17,7 @@ export const useGetTradesBySymbol = (symbol:string) => {
 export const useTradeFirstDate = (trade:Trade) => {
     return useMemo(() => {
         if(!trade.transactions) return '-';
-        return trade.transactions[0].datetime.toLocaleDateString();
+        return new Date(trade.transactions[0].datetime).toLocaleDateString();
     }, [trade.transactions]);
 }
 
