@@ -40,6 +40,10 @@ const TradesPage = () => {
         setIsAddTradeDialogVisible(false);
     }
 
+    const handleTradeAdded = () => {
+        setIsAddTradeDialogVisible(false);
+    }
+
     return <div>
         <TradesList trades={trades}/>
         <AddTradeButtonContainer>
@@ -49,6 +53,7 @@ const TradesPage = () => {
             ref={addTradeDialogRef}
             $isVisible={isAddTradeDialogVisible}
             onClick={handleAddTradeClose}>
+            <AddTradeDialog dispatchTradeAdded={handleTradeAdded}/>
         </AddTradeDialogContainer>
     </div>;
 }
