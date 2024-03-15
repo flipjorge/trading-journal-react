@@ -162,12 +162,12 @@ const AddTradeDialog:FC<AddTradeDialogProps> = ({dispatchTradeAdded}) => {
 
     const convertFormDataToTrade = (data:FormData) => {
         
-        const positions:TradeTransaction[] = data.positions.map(position => {
+        const positions:TradeTransaction[] = data.positions.map((position, index) => {
             const date = position.datetime ? new Date(position.datetime) : new Date();
 
             const transaction:TradeTransaction = {
                 action:position.type,
-                id:nextTradeId,
+                id:index,
                 datetime:date.toISOString(),
                 price:position.price || 0,
                 quantity:position.quantity || 0,
