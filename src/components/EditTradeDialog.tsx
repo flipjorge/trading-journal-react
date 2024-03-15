@@ -1,6 +1,6 @@
 import { FC, FormEvent, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
-import { useEditTrade } from "../hooks/tradeHooks";
+import { useDeleteTrade, useEditTrade } from "../hooks/tradeHooks";
 import { Trade, TradeTransaction } from "../models/Models";
 
 const Dialog = styled.div`
@@ -57,10 +57,11 @@ type PositionItem = {
 
 type EditTradeDialogProps = {
     trade:Trade,
-    dispatchTradeEdited?: () => void
+    dispatchTradeEdited?: () => void,
+    dispatchTradeDeleted?: () => void
 }
 
-const EditTradeDialog:FC<EditTradeDialogProps> = ({trade, dispatchTradeEdited}) => {
+const EditTradeDialog:FC<EditTradeDialogProps> = ({trade, dispatchTradeEdited, dispatchTradeDeleted}) => {
 
     const transactions = useMemo<PositionItem[]>(() => {
         return trade.transactions.map(transaction => ({
@@ -98,6 +99,7 @@ const EditTradeDialog:FC<EditTradeDialogProps> = ({trade, dispatchTradeEdited}) 
     }, [formData.positions]);
 
     const dispatchEditTrade = useEditTrade();
+    const dispatchDeleteTrade = useDeleteTrade();
 
     const handleChange = (event:FormEvent<HTMLInputElement>) => {
         const target = event.target as HTMLInputElement;
@@ -179,6 +181,11 @@ const EditTradeDialog:FC<EditTradeDialogProps> = ({trade, dispatchTradeEdited}) 
         if(dispatchTradeEdited) dispatchTradeEdited();
     }
 
+    const handleDelete = () => {
+        dispatchDeleteTrade(trade);
+        if(dispatchTradeDeleted) dispatchTradeDeleted();
+    }
+
     const convertFormDataToTrade = (data:FormData) => {
         
         const positions:TradeTransaction[] = data.positions.map(position => {
@@ -249,6 +256,9 @@ const EditTradeDialog:FC<EditTradeDialogProps> = ({trade, dispatchTradeEdited}) 
             </PositionsGrid>
             <div>
                 <button type="submit">Edit Trade</button>
+            </div>
+            <div>
+                <button type="button" onClick={handleDelete}>Delete Trade</button>
             </div>
         </form>
     </Dialog>

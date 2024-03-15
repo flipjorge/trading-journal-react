@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { RootState } from "../store";
 import { Trade } from "../models/Models";
 import { useMemo } from "react";
-import { addTrade, updateTrade } from "../slices/tradesSlice";
+import { addTrade, removeTrade, updateTrade } from "../slices/tradesSlice";
 
 export const useGetAllTrades = () => {
     return useSelector((state:RootState) => state.trades);
@@ -61,4 +61,10 @@ export const useEditTrade = () => {
     const dispatch = useDispatch();
 
     return (trade:Trade) => dispatch(updateTrade(trade));
+}
+
+export const useDeleteTrade = () => {
+    const dispatch = useDispatch();
+
+    return (trade:Trade) => dispatch(removeTrade(trade.id));
 }

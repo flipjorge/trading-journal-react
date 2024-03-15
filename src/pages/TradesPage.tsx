@@ -80,7 +80,9 @@ const TradesPage = () => {
             ref={editTradeDialogRef}
             $isVisible={isEditTradeDialogVisible}
             onClick={handleEditTradeClose}>
-            <EditTradeDialog trade={selectedTrade} dispatchTradeEdited={handleTradeEdited}/>
+            <EditTradeDialog trade={selectedTrade}
+                dispatchTradeEdited={handleTradeEdited}
+                dispatchTradeDeleted={handleTradeEdited}/>
         </AddTradeDialogContainer>}
     </div>;
 }
