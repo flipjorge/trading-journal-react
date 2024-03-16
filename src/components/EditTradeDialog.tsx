@@ -1,52 +1,17 @@
 import { FormEvent, useEffect, useMemo, useState } from "react";
-import styled from "styled-components";
 import { useDeleteTrade, useEditTrade } from "../hooks/tradeHooks";
 import { Trade, TradeTransaction } from "../models/tradeModels";
-
-const Dialog = styled.div`
-    background-color: gray;
-    width: 1000px;
-    height: 700px;
-    padding: 10px;
-`
-
-const Title = styled.div`
-    font-size: 1.5rem;
-`
-
-const MainInfoGrid = styled.div`
-    display: grid;
-    grid-template-columns: auto auto auto;
-    grid-column-gap: 10px;
-`
-
-const PositionsGrid = styled.div`
-    display: grid;
-    grid-template-columns: auto auto auto auto auto;
-    grid-column-gap: 10px;
-`
-
-const PositionItemRow = styled.div`
-    display: contents;
-`
-
-const AddPositionItemRow = styled.div`
-    display: contents;
-
-    & > div {
-        grid-column: 2 / span 4;
-    }
-`
+import { Dialog, Title, MainInfoGrid, PositionsGrid, PositionItemRow, AddPositionItemRow } from '../styles/TradeDialog.styles';
 
 type FormData = {
     id:number,
     symbol:string,
     sl:string,
     tp:string,
-    positions:PositionItem[]
+    positions:FormPositionItem[]
 }
 
-type PositionItem = {
+type FormPositionItem = {
     id:number,
     type: 'buy' | 'sell',
     datetime:string,
@@ -63,7 +28,7 @@ type EditTradeDialogProps = {
 
 const EditTradeDialog = ({trade, onTradeEdited, onTradeDeleted}:EditTradeDialogProps) => {
 
-    const transactions = useMemo<PositionItem[]>(() => {
+    const transactions = useMemo<FormPositionItem[]>(() => {
         return trade.transactions.map(transaction => ({
             id: transaction.id,
             type: transaction.action,
@@ -111,7 +76,7 @@ const EditTradeDialog = ({trade, onTradeEdited, onTradeDeleted}:EditTradeDialogP
     }
 
     const handlePositionItemChange = (index:number, name:string, value:string) => {
-        const updatePositions:PositionItem[] = formData.positions.map((position, i) => {
+        const updatePositions:FormPositionItem[] = formData.positions.map((position, i) => {
             if(i === index) return {
                 ...position,
                 [name]: value
@@ -126,7 +91,7 @@ const EditTradeDialog = ({trade, onTradeEdited, onTradeDeleted}:EditTradeDialogP
     }
 
     const handlePositionItemTypeChange = (index:number) => {
-        const updatePositions:PositionItem[] = formData.positions.map((position, i) => {
+        const updatePositions:FormPositionItem[] = formData.positions.map((position, i) => {
             if(i === index) return {
                 ...position,
                 type: position.type === 'buy' ? 'sell' : 'buy'
@@ -142,7 +107,7 @@ const EditTradeDialog = ({trade, onTradeEdited, onTradeDeleted}:EditTradeDialogP
 
     const handleAddPositionClick = () => {
 
-        const newPositionItem:PositionItem = {
+        const newPositionItem:FormPositionItem = {
             id: nextTransationId,
             type: "buy",
             datetime: '',

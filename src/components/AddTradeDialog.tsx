@@ -1,51 +1,16 @@
 import { FormEvent, useState } from "react";
-import styled from "styled-components";
 import { useAddTrade, useGetNextTradeId } from "../hooks/tradeHooks";
 import { Trade, TradeTransaction } from "../models/tradeModels";
-
-const Dialog = styled.div`
-    background-color: gray;
-    width: 1000px;
-    height: 700px;
-    padding: 10px;
-`
-
-const Title = styled.div`
-    font-size: 1.5rem;
-`
-
-const MainInfoGrid = styled.div`
-    display: grid;
-    grid-template-columns: auto auto auto;
-    grid-column-gap: 10px;
-`
-
-const PositionsGrid = styled.div`
-    display: grid;
-    grid-template-columns: auto auto auto auto auto;
-    grid-column-gap: 10px;
-`
-
-const PositionItemRow = styled.div`
-    display: contents;
-`
-
-const AddPositionItemRow = styled.div`
-    display: contents;
-
-    & > div {
-        grid-column: 2 / span 4;
-    }
-`
+import { Dialog, Title, MainInfoGrid, PositionsGrid, PositionItemRow, AddPositionItemRow } from '../styles/TradeDialog.styles';
 
 type FormData = {
     symbol:string,
     sl:string,
     tp:string,
-    positions:PositionItem[]
+    positions:FormPositionItem[]
 }
 
-type PositionItem = {
+type FormPositionItem = {
     type: 'buy' | 'sell',
     datetime:string,
     quantity:number | undefined,
@@ -91,7 +56,7 @@ const AddTradeDialog = ({onTradeAdded}:AddTradeDialogProps) => {
     }
 
     const handlePositionItemChange = (index:number, name:string, value:string) => {
-        const updatePositions:PositionItem[] = formData.positions.map((position, i) => {
+        const updatePositions:FormPositionItem[] = formData.positions.map((position, i) => {
             if(i === index) return {
                 ...position,
                 [name]: value
@@ -106,7 +71,7 @@ const AddTradeDialog = ({onTradeAdded}:AddTradeDialogProps) => {
     }
 
     const handlePositionItemTypeChange = (index:number) => {
-        const updatePositions:PositionItem[] = formData.positions.map((position, i) => {
+        const updatePositions:FormPositionItem[] = formData.positions.map((position, i) => {
             if(i === index) return {
                 ...position,
                 type: position.type === 'buy' ? 'sell' : 'buy'
@@ -122,7 +87,7 @@ const AddTradeDialog = ({onTradeAdded}:AddTradeDialogProps) => {
 
     const handleAddPositionClick = () => {
 
-        const newPositionItem:PositionItem = {
+        const newPositionItem:FormPositionItem = {
             type: "buy",
             datetime: '',
             price: 0,
