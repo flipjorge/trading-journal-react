@@ -1,7 +1,7 @@
 import { FC, FormEvent, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import { useDeleteTrade, useEditTrade } from "../hooks/tradeHooks";
-import { Trade, TradeTransaction } from "../models/Models";
+import { Trade, TradeTransaction } from "../models/tradeModels";
 
 const Dialog = styled.div`
     background-color: gray;

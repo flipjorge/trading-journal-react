@@ -1,10 +1,10 @@
-export interface Trade {
+export type Trade = {
     id: number,
     symbol: string,
     transactions: TradeTransaction[]
 }
 
-export interface TradeTransaction {
+export type TradeTransaction = {
     id: number,
     action: 'buy' | 'sell',
     datetime: string,

@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux"
 import { RootState } from "../store";
-import { Trade } from "../models/Models";
+import { Trade } from "../models/tradeModels";
 import { useMemo } from "react";
 import { addTrade, removeTrade, updateTrade } from "../slices/tradesSlice";
 

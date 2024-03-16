@@ -1,6 +1,6 @@
-import { Trade } from "../models/Models"
+import { Trade } from "../models/tradeModels"
 
-const dummyData:Trade[] = [
+export const dummyData:Trade[] = [
     {
         id: 0,
         symbol: 'btc',
@@ -58,5 +58,3 @@ const dummyData:Trade[] = [
         }]
     }
 ];
-
-export default dummyData;

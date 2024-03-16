@@ -5,7 +5,7 @@ import { useGetAllTrades } from "../hooks/tradeHooks";
 import AddTradeDialog from "../components/AddTradeDialog";
 import { useRef, useState } from "react";
 import EditTradeDialog from "../components/EditTradeDialog";
-import { Trade } from "../models/Models";
+import { Trade } from "../models/tradeModels";
 
 const AddTradeButtonContainer = styled.div`
     position: fixed;

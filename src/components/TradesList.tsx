@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Trade } from '../models/Models';
+import { Trade } from '../models/tradeModels';
 import TradesListItem from './TradesListItem';
 import { FC } from 'react';
 
