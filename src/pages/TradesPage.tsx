@@ -13,9 +13,9 @@ const AddTradeButtonContainer = styled.div`
     right: 20px;
 `
 
-const AddTradeDialogContainer = styled.div<{$isVisible:boolean}>`
+const AddTradeDialogContainer = styled.div`
     position: fixed;
-    display: ${ ({$isVisible}) => $isVisible ? 'flex' : 'none' };
+    display: flex;
     width: 100%;
     height: 100%;
     top:0;
@@ -69,16 +69,15 @@ const TradesPage = () => {
         <AddTradeButtonContainer>
             <AddTradeButton onClick={handleAddTradeOpen}/>
         </AddTradeButtonContainer>
+        {isAddTradeDialogVisible &&
         <AddTradeDialogContainer
             ref={addTradeDialogRef}
-            $isVisible={isAddTradeDialogVisible}
             onClick={handleAddTradeClose}>
-        </AddTradeDialogContainer>
-        {selectedTrade && 
             <AddTradeDialog onTradeAdded={handleTradeAdded}/>
+        </AddTradeDialogContainer>}
+        {isEditTradeDialogVisible && selectedTrade && 
         <AddTradeDialogContainer
             ref={editTradeDialogRef}
-            $isVisible={isEditTradeDialogVisible}
             onClick={handleEditTradeClose}>
             <EditTradeDialog trade={selectedTrade}
                 onTradeEdited={handleTradeEdited}
