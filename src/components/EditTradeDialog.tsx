@@ -1,4 +1,4 @@
-import { FC, FormEvent, useEffect, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import { useDeleteTrade, useEditTrade } from "../hooks/tradeHooks";
 import { Trade, TradeTransaction } from "../models/tradeModels";
@@ -57,11 +57,11 @@ type PositionItem = {
 
 type EditTradeDialogProps = {
     trade:Trade,
-    dispatchTradeEdited?: () => void,
-    dispatchTradeDeleted?: () => void
+    onTradeEdited?: () => void,
+    onTradeDeleted?: () => void
 }
 
-const EditTradeDialog:FC<EditTradeDialogProps> = ({trade, dispatchTradeEdited, dispatchTradeDeleted}) => {
+const EditTradeDialog = ({trade, onTradeEdited, onTradeDeleted}:EditTradeDialogProps) => {
 
     const transactions = useMemo<PositionItem[]>(() => {
         return trade.transactions.map(transaction => ({
@@ -178,12 +178,12 @@ const EditTradeDialog:FC<EditTradeDialogProps> = ({trade, dispatchTradeEdited, d
         event.preventDefault();
         dispatchEditTrade(convertFormDataToTrade(formData));
         console.log(formData);
-        if(dispatchTradeEdited) dispatchTradeEdited();
+        if(onTradeEdited) onTradeEdited();
     }
 
     const handleDelete = () => {
         dispatchDeleteTrade(trade);
-        if(dispatchTradeDeleted) dispatchTradeDeleted();
+        if(onTradeDeleted) onTradeDeleted();
     }
 
     const convertFormDataToTrade = (data:FormData) => {

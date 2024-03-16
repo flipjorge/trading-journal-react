@@ -2,7 +2,6 @@ import styled from "styled-components";
 import { Trade } from "../models/tradeModels";
 import { useTradeEntryPrice, useTradeEntryTotal,
     useTradeFirstDate, useTradeTotalQuantity } from "../hooks/tradeHooks";
-import { FC } from "react";
 
 const Item = styled.li`
     display: flex;
@@ -17,10 +16,10 @@ const Item = styled.li`
 
 type TradeListItemProps = {
     trade:Trade,
-    dispatchSelected?:(trade:Trade) => void
+    onSelected?:(trade:Trade) => void
 }
 
-const TradesListItem:FC<TradeListItemProps> = ({trade, dispatchSelected}) => {
+const TradesListItem = ({trade, onSelected}:TradeListItemProps) => {
 
     const date = useTradeFirstDate(trade);
     const entryPrice = useTradeEntryPrice(trade);
@@ -28,7 +27,7 @@ const TradesListItem:FC<TradeListItemProps> = ({trade, dispatchSelected}) => {
     const totalQuantity = useTradeTotalQuantity(trade);
 
     const handleItemClick = () => {
-        if(dispatchSelected) dispatchSelected(trade);
+        if(onSelected) onSelected(trade);
     }
 
     return <Item onClick={handleItemClick}>

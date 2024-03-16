@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 import { Trade } from '../models/tradeModels';
 import TradesListItem from './TradesListItem';
-import { FC } from 'react';
 
 const List = styled.div`
     display: block;
@@ -25,13 +24,13 @@ const List = styled.div`
 
 type TradesListProps = {
     trades:Trade[],
-    dispatchTradeSelected?:(trade:Trade) => void
+    onTradeSelected?:(trade:Trade) => void
 }
 
-const TradesList:FC<TradesListProps> = ({trades, dispatchTradeSelected}) => {
+const TradesList = ({trades, onTradeSelected}:TradesListProps) => {
 
     const handleItemSelected = (trade:Trade) => {
-        if(dispatchTradeSelected) dispatchTradeSelected(trade);
+        if(onTradeSelected) onTradeSelected(trade);
     }
 
     return <List>
@@ -44,7 +43,7 @@ const TradesList:FC<TradesListProps> = ({trades, dispatchTradeSelected}) => {
         </ul>
         <ul>
             {trades.map(trade => (
-                <TradesListItem key={trade.id} trade={trade} dispatchSelected={handleItemSelected}/>
+                <TradesListItem key={trade.id} trade={trade} onSelected={handleItemSelected}/>
             ))}
         </ul>
     </List>

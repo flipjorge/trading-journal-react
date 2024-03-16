@@ -1,4 +1,4 @@
-import { FC, FormEvent, useState } from "react";
+import { FormEvent, useState } from "react";
 import styled from "styled-components";
 import { useAddTrade, useGetNextTradeId } from "../hooks/tradeHooks";
 import { Trade, TradeTransaction } from "../models/tradeModels";
@@ -54,10 +54,10 @@ type PositionItem = {
 }
 
 type AddTradeDialogProps = {
-    dispatchTradeAdded?: () => void
+    onTradeAdded?: () => void
 }
 
-const AddTradeDialog:FC<AddTradeDialogProps> = ({dispatchTradeAdded}) => {
+const AddTradeDialog = ({onTradeAdded}:AddTradeDialogProps) => {
 
     const [formData, setFormData] = useState<FormData>({
         symbol: '',
@@ -157,7 +157,7 @@ const AddTradeDialog:FC<AddTradeDialogProps> = ({dispatchTradeAdded}) => {
         event.preventDefault();
         dispatchAddTrade(convertFormDataToTrade(formData));
         console.log(formData);
-        if(dispatchTradeAdded) dispatchTradeAdded();
+        if(onTradeAdded) onTradeAdded();
     }
 
     const convertFormDataToTrade = (data:FormData) => {

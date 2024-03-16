@@ -32,7 +32,7 @@ const TradesPage = () => {
 
     const [isAddTradeDialogVisible, setIsAddTradeDialogVisible] = useState(false);
     const [isEditTradeDialogVisible, setIsEditTradeDialogVisible] = useState(false);
-    const [selectedTrade, setSelectedTrade] = useState<Trade | undefined>(undefined);
+    const [selectedTrade, setSelectedTrade] = useState<Trade | null>(null);
     const addTradeDialogRef = useRef(null);
     const editTradeDialogRef = useRef(null);
 
@@ -61,11 +61,11 @@ const TradesPage = () => {
 
     const handleTradeEdited = () => {
         setIsEditTradeDialogVisible(false);
-        setSelectedTrade(undefined);
+        setSelectedTrade(null);
     }
 
     return <div>
-        <TradesList trades={trades} dispatchTradeSelected={handleTradeSelected}/>
+        <TradesList trades={trades} onTradeSelected={handleTradeSelected}/>
         <AddTradeButtonContainer>
             <AddTradeButton onClick={handleAddTradeOpen}/>
         </AddTradeButtonContainer>
@@ -73,16 +73,16 @@ const TradesPage = () => {
             ref={addTradeDialogRef}
             $isVisible={isAddTradeDialogVisible}
             onClick={handleAddTradeClose}>
-            <AddTradeDialog dispatchTradeAdded={handleTradeAdded}/>
         </AddTradeDialogContainer>
         {selectedTrade && 
+            <AddTradeDialog onTradeAdded={handleTradeAdded}/>
         <AddTradeDialogContainer
             ref={editTradeDialogRef}
             $isVisible={isEditTradeDialogVisible}
             onClick={handleEditTradeClose}>
             <EditTradeDialog trade={selectedTrade}
-                dispatchTradeEdited={handleTradeEdited}
-                dispatchTradeDeleted={handleTradeEdited}/>
+                onTradeEdited={handleTradeEdited}
+                onTradeDeleted={handleTradeEdited}/>
         </AddTradeDialogContainer>}
     </div>;
 }
