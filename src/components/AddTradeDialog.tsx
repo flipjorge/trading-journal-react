@@ -3,6 +3,7 @@ import { useAddTrade } from "../hooks/tradeHooks";
 import { Trade, TradeTransaction } from "../models/tradeModels";
 import { Dialog, Title, MainInfoGrid, PositionsGrid, PositionItemRow, AddPositionItemRow } from '../styles/TradeDialog.styles';
 import { useGenerateUUID } from "../hooks/uuidHooks";
+import { useAddTransactions } from "../hooks/transactionHooks";
 
 type FormData = {
     symbol:string,
@@ -45,6 +46,7 @@ const AddTradeDialog = ({onTradeAdded}:AddTradeDialogProps) => {
     });
 
     const dispatchAddTrade = useAddTrade();
+    const dispatchAddTransactions = useAddTransactions();
     const generateTradeId = useGenerateUUID();
 
     const handleChange = (event:FormEvent<HTMLInputElement>) => {
@@ -123,17 +125,32 @@ const AddTradeDialog = ({onTradeAdded}:AddTradeDialogProps) => {
         event.preventDefault();
         const trade = convertFormDataToTrade(formData);
         dispatchAddTrade(trade);
+        const transactions = convertFormDataToTransactions(formData, trade.id);
+        dispatchAddTransactions(transactions);
         if(onTradeAdded) onTradeAdded();
     }
 
     const convertFormDataToTrade = (data:FormData) => {
         
-        const positions:TradeTransaction[] = data.positions.map((position) => {
-            const date = position.datetime ? new Date(position.datetime) : new Date();
+        const trade:Trade = {
+            id:generateTradeId(),
+            symbol:data.symbol
+        }
 
+        console.log(trade);
+
+        return trade;
+    }
+
+    const convertFormDataToTransactions = (data:FormData, tradeId:string) => {
+
+        const transactions:TradeTransaction[] = data.positions.map((position) => {
+            
+            const date = position.datetime ? new Date(position.datetime) : new Date();
             const transaction:TradeTransaction = {
-                action:position.type,
                 id:generateTradeId(),
+                tradeId:tradeId,
+                action:position.type,
                 datetime:date.toISOString(),
                 price:position.price || 0,
                 quantity:position.quantity || 0,
@@ -142,14 +159,10 @@ const AddTradeDialog = ({onTradeAdded}:AddTradeDialogProps) => {
 
             return transaction;
         });
-        
-        const trade:Trade = {
-            id:generateTradeId(),
-            symbol:data.symbol,
-            transactions:positions
-        }
 
-        return trade;
+        console.log(transactions);
+
+        return transactions;
     }
 
     return <Dialog>
