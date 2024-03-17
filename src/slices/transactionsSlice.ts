@@ -1,24 +1,24 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { TradeTransaction } from "../models/tradeModels";
+import { Transaction } from "../models/tradeModels";
 import { dummyTransactionsData } from "../data/dummyTransactionsData";
 
 const transactionsSlice = createSlice({
     name:'transactions',
     initialState: dummyTransactionsData,
     reducers: {
-        addTransaction: (state:TradeTransaction[], action:PayloadAction<TradeTransaction>) => {
+        addTransaction: (state:Transaction[], action:PayloadAction<Transaction>) => {
             state.push(action.payload);
         },
-        addTransactions: (state:TradeTransaction[], action:PayloadAction<TradeTransaction[]>) => {
+        addTransactions: (state:Transaction[], action:PayloadAction<Transaction[]>) => {
             state.push(...action.payload);
         },
-        updateTransaction: (state:TradeTransaction[], action:PayloadAction<TradeTransaction>) => {
+        updateTransaction: (state:Transaction[], action:PayloadAction<Transaction>) => {
             const index = state.findIndex(transaction => transaction.id === action.payload.id);
             if(index !== -1) {
                 state[index] = action.payload;
             }
         },
-        updateTransactions: (state:TradeTransaction[], action:PayloadAction<TradeTransaction[]>) => {
+        updateTransactions: (state:Transaction[], action:PayloadAction<Transaction[]>) => {
             action.payload.forEach(actionTransaction => {
                 const index = state.findIndex(stateTransaction => stateTransaction.id === actionTransaction.id);
                 if(index !== -1) {
@@ -26,7 +26,7 @@ const transactionsSlice = createSlice({
                 }
             });
         },
-        setTransactionsForTrade: (state:TradeTransaction[], action:PayloadAction<{tradeId:string, transactions:TradeTransaction[]}>) => {
+        setTransactionsForTrade: (state:Transaction[], action:PayloadAction<{tradeId:string, transactions:Transaction[]}>) => {
             
             const tradeTransactions = state.filter(stateTransaction => stateTransaction.tradeId === action.payload.tradeId);
 
@@ -52,13 +52,13 @@ const transactionsSlice = createSlice({
                 }
             });
         },
-        removeTransaction: (state:TradeTransaction[], action:PayloadAction<string>) => {
+        removeTransaction: (state:Transaction[], action:PayloadAction<string>) => {
             const index = state.findIndex(transaction => transaction.id === action.payload);
             if(index !== -1) {
                 state.splice(index, 1);
             }
         },
-        removeTransactionsByTradeId: (state:TradeTransaction[], action:PayloadAction<string>) => {
+        removeTransactionsByTradeId: (state:Transaction[], action:PayloadAction<string>) => {
             console.log(state.length);
             state.forEach(() => {
                 const index = state.findIndex(transaction => transaction.tradeId === action.payload);
@@ -70,5 +70,6 @@ const transactionsSlice = createSlice({
     }
 });
 
-export const { addTransaction, addTransactions, updateTransaction, updateTransactions, setTransactionsForTrade, removeTransaction, removeTransactionsByTradeId } = transactionsSlice.actions;
+export const { addTransaction, addTransactions, updateTransaction, updateTransactions, 
+    setTransactionsForTrade, removeTransaction, removeTransactionsByTradeId } = transactionsSlice.actions;
 export default transactionsSlice.reducer;

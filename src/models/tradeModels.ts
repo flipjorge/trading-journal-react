@@ -3,7 +3,7 @@ export type Trade = {
     symbol: string
 }
 
-export type TradeTransaction = {
+export type Transaction = {
     id: string,
     tradeId: string,
     action: 'buy' | 'sell',

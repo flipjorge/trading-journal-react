@@ -1,6 +1,6 @@
-import { TradeTransaction } from "../models/tradeModels";
+import { Transaction } from "../models/tradeModels";
 
-export const dummyTransactionsData:TradeTransaction[] = [
+export const dummyTransactionsData:Transaction[] = [
     {
         id:'0',
         tradeId:'0',

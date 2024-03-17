@@ -1,6 +1,6 @@
 import { FormEvent, useState } from "react";
 import { useAddTrade } from "../hooks/tradeHooks";
-import { Trade, TradeTransaction } from "../models/tradeModels";
+import { Trade, Transaction } from "../models/tradeModels";
 import { Dialog, Title, MainInfoGrid, PositionsGrid, PositionItemRow, AddPositionItemRow } from '../styles/TradeDialog.styles';
 import { useGenerateUUID } from "../hooks/uuidHooks";
 import { useAddTransactions } from "../hooks/transactionHooks";
@@ -144,10 +144,10 @@ const AddTradeDialog = ({onTradeAdded}:AddTradeDialogProps) => {
 
     const convertFormDataToTransactions = (data:FormData, tradeId:string) => {
 
-        const transactions:TradeTransaction[] = data.positions.map((position) => {
+        const transactions:Transaction[] = data.positions.map((position) => {
             
             const date = position.datetime ? new Date(position.datetime) : new Date();
-            const transaction:TradeTransaction = {
+            const transaction:Transaction = {
                 id:generateTradeId(),
                 tradeId:tradeId,
                 action:position.type,
