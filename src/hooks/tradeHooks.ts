@@ -44,13 +44,6 @@ export const useTradeEntryTotal = (trade:Trade) => {
     }, [trade.transactions]);
 }
 
-export const useGetNextTradeId = () => {
-    const trades = useGetAllTrades();
-    return useMemo(() => {
-        return trades[trades.length-1].id + 1;
-    }, [trades]);
-}
-
 export const useAddTrade = () => {
     const dispatch = useDispatch();
 

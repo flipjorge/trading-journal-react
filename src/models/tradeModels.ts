@@ -1,11 +1,11 @@
 export type Trade = {
-    id: number,
+    id: string,
     symbol: string,
     transactions: TradeTransaction[]
 }
 
 export type TradeTransaction = {
-    id: number,
+    id: string,
     action: 'buy' | 'sell',
     datetime: string,
     quantity: number,
