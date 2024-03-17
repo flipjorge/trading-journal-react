@@ -46,7 +46,7 @@ const tradesSlice = createSlice({
             }
         }
     }
-})
+});
 
 export const { addTrade, updateTrade, removeTrade, addTransactionToTrade, updateTransactionOfTrade, removeTransationFromTrade } = tradesSlice.actions;
 export default tradesSlice.reducer;

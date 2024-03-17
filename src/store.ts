@@ -1,8 +1,10 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import tradesReducer from './slices/tradesSlice';
+import dialogsSlice from "./slices/dialogsSlice";
 
 const rootReducer = combineReducers({
-    trades:tradesReducer
+    trades:tradesReducer,
+    dialogs:dialogsSlice
 })
 
 export const store = configureStore({
