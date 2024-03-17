@@ -3,9 +3,10 @@ import { useDeleteTrade, useEditTrade } from "../hooks/tradeHooks";
 import { Trade, TradeTransaction } from "../models/tradeModels";
 import { Dialog, Title, MainInfoGrid, PositionsGrid, PositionItemRow, AddPositionItemRow } from '../styles/TradeDialog.styles';
 import { useGetSelectedTrade } from "../hooks/selectedTradeHooks";
+import { useGenerateUUID } from "../hooks/uuidHooks";
 
 type FormData = {
-    id:number,
+    id:string,
     symbol:string,
     sl:string,
     tp:string,
@@ -13,7 +14,7 @@ type FormData = {
 }
 
 type FormPositionItem = {
-    id:number,
+    id:string,
     type: 'buy' | 'sell',
     datetime:string,
     quantity:number | undefined,
@@ -43,19 +44,17 @@ const EditTradeDialog = ({onTradeEdited, onTradeDeleted}:EditTradeDialogProps) =
     }, [trade]);
 
     const [formData, setFormData] = useState<FormData>({
-        id: 0,
+        id: '',
         symbol: '',
         sl: '',
         tp: '',
         positions: transactions
     });
 
-    const [nextTransationId, setNextTransationId] = useState(0);
-
     useEffect(() => {
         if(!trade) return;
         setFormData({
-            id: trade.id || 0,
+            id: trade.id || '',
             symbol: trade.symbol || '',
             sl: '',
             tp: '',
@@ -63,12 +62,9 @@ const EditTradeDialog = ({onTradeEdited, onTradeDeleted}:EditTradeDialogProps) =
         });
     }, [trade, transactions]);
 
-    useEffect(() => {
-        setNextTransationId(formData.positions[formData.positions.length - 1].id + 1);
-    }, [formData.positions]);
-
     const dispatchEditTrade = useEditTrade();
     const dispatchDeleteTrade = useDeleteTrade();
+    const generateTradeId = useGenerateUUID();
 
     const handleChange = (event:FormEvent<HTMLInputElement>) => {
         const target = event.target as HTMLInputElement;
@@ -112,7 +108,7 @@ const EditTradeDialog = ({onTradeEdited, onTradeDeleted}:EditTradeDialogProps) =
     const handleAddPositionClick = () => {
 
         const newPositionItem:FormPositionItem = {
-            id: nextTransationId,
+            id: generateTradeId(),
             type: "buy",
             datetime: '',
             price: undefined,
@@ -145,8 +141,8 @@ const EditTradeDialog = ({onTradeEdited, onTradeDeleted}:EditTradeDialogProps) =
 
     const handleSubmit = (event:FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        dispatchEditTrade(convertFormDataToTrade(formData));
-        console.log(formData);
+        const trade = convertFormDataToTrade(formData)
+        dispatchEditTrade(trade);
         if(onTradeEdited) onTradeEdited();
     }
 

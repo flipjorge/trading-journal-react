@@ -1,7 +1,8 @@
 import { FormEvent, useState } from "react";
-import { useAddTrade, useGetNextTradeId } from "../hooks/tradeHooks";
+import { useAddTrade } from "../hooks/tradeHooks";
 import { Trade, TradeTransaction } from "../models/tradeModels";
 import { Dialog, Title, MainInfoGrid, PositionsGrid, PositionItemRow, AddPositionItemRow } from '../styles/TradeDialog.styles';
+import { useGenerateUUID } from "../hooks/uuidHooks";
 
 type FormData = {
     symbol:string,
@@ -44,7 +45,7 @@ const AddTradeDialog = ({onTradeAdded}:AddTradeDialogProps) => {
     });
 
     const dispatchAddTrade = useAddTrade();
-    const nextTradeId = useGetNextTradeId();
+    const generateTradeId = useGenerateUUID();
 
     const handleChange = (event:FormEvent<HTMLInputElement>) => {
         const target = event.target as HTMLInputElement;
@@ -120,19 +121,19 @@ const AddTradeDialog = ({onTradeAdded}:AddTradeDialogProps) => {
 
     const handleSubmit = (event:FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        dispatchAddTrade(convertFormDataToTrade(formData));
-        console.log(formData);
+        const trade = convertFormDataToTrade(formData);
+        dispatchAddTrade(trade);
         if(onTradeAdded) onTradeAdded();
     }
 
     const convertFormDataToTrade = (data:FormData) => {
         
-        const positions:TradeTransaction[] = data.positions.map((position, index) => {
+        const positions:TradeTransaction[] = data.positions.map((position) => {
             const date = position.datetime ? new Date(position.datetime) : new Date();
 
             const transaction:TradeTransaction = {
                 action:position.type,
-                id:index,
+                id:generateTradeId(),
                 datetime:date.toISOString(),
                 price:position.price || 0,
                 quantity:position.quantity || 0,
@@ -143,7 +144,7 @@ const AddTradeDialog = ({onTradeAdded}:AddTradeDialogProps) => {
         });
         
         const trade:Trade = {
-            id:nextTradeId,
+            id:generateTradeId(),
             symbol:data.symbol,
             transactions:positions
         }
@@ -181,7 +182,7 @@ const AddTradeDialog = ({onTradeAdded}:AddTradeDialogProps) => {
                             <button type="button" onClick={() => handleRemovePositionClick(index)}>x</button>
                             <button type="button" onClick={() => handlePositionItemTypeChange(index)}>{item.type === "buy" ? "Buy/Long" : "Sell/Short"}</button>
                         </div>
-                        <input name="datetime" value={currentPosition.datetime} onChange={e => handlePositionItemChange(index, e.target.name, e.target.value)} placeholder="Eg. 06/16/2022 01:01 PM"/>
+                        <input name="datetime" value={currentPosition.datetime} onChange={e => handlePositionItemChange(index, e.target.name, e.target.value)} type="datetime-local" placeholder="Eg. 06/16/2022 01:01 PM"/>
                         <input name="quantity" value={quantityValue} onChange={e => handlePositionItemChange(index, e.target.name, e.target.value)} type="number" placeholder="Eg. 3.21"/>
                         <input name="price" value={priceValue} onChange={e => handlePositionItemChange(index, e.target.name, e.target.value)} type="number" placeholder="Eg. 123.02"/>
                         <input name="fee" value={feeValue} onChange={e => handlePositionItemChange(index, e.target.name, e.target.value)} type="number" placeholder="Eg. 0.05"/>
