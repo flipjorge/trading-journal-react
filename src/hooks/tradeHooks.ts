@@ -19,7 +19,7 @@ export const useGetTradesBySymbol = (symbol:string) => {
 export const useTradeFirstDate = (trade:Trade) => {
     const transactions = useGetTransactionsByTradeId(trade.id);
     return useMemo(() => {
-        if(!transactions) return '-';
+        if(!transactions || transactions.length === 0) return '-';
         return new Date(transactions[0].datetime).toLocaleDateString();
     }, [transactions]);
 }
@@ -44,7 +44,7 @@ export const useTradeTotalQuantity = (trade:Trade) => {
 export const useTradeEntryTotal = (trade:Trade) => {
     const transactions = useGetTransactionsByTradeId(trade.id);
     return useMemo(() => {
-        if(!transactions) return '-';
+        if(!transactions || transactions.length === 0) return '-';
         return transactions[0].price * transactions[0].quantity;
     }, [transactions]);
 }
