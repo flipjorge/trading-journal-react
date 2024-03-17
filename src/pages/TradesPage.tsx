@@ -13,7 +13,7 @@ const AddTradeButtonContainer = styled.div`
     right: 20px;
 `
 
-const AddTradeDialogContainer = styled.div`
+const TradeDialogContainer = styled.div`
     position: fixed;
     display: flex;
     width: 100%;
@@ -70,19 +70,19 @@ const TradesPage = () => {
             <AddTradeButton onClick={handleAddTradeOpen}/>
         </AddTradeButtonContainer>
         {isAddTradeDialogVisible &&
-        <AddTradeDialogContainer
+        <TradeDialogContainer
             ref={addTradeDialogRef}
             onClick={handleAddTradeClose}>
             <AddTradeDialog onTradeAdded={handleTradeAdded}/>
-        </AddTradeDialogContainer>}
+        </TradeDialogContainer>}
         {isEditTradeDialogVisible && selectedTrade && 
-        <AddTradeDialogContainer
+        <TradeDialogContainer
             ref={editTradeDialogRef}
             onClick={handleEditTradeClose}>
             <EditTradeDialog trade={selectedTrade}
                 onTradeEdited={handleTradeEdited}
                 onTradeDeleted={handleTradeEdited}/>
-        </AddTradeDialogContainer>}
+        </TradeDialogContainer>}
     </div>;
 }
 
