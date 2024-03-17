@@ -15,17 +15,17 @@ const tradesSlice = createSlice({
                 state[index] = action.payload;
             }
         },
-        removeTrade: (state:Trade[], action:PayloadAction<number>) => {
+        removeTrade: (state:Trade[], action:PayloadAction<string>) => {
             const index = state.findIndex(trade => trade.id === action.payload);
             state.splice(index, 1);
         },
-        addTransactionToTrade: (state:Trade[], action:PayloadAction<{tradeId:number, transaction:TradeTransaction}>) => {
+        addTransactionToTrade: (state:Trade[], action:PayloadAction<{tradeId:string, transaction:TradeTransaction}>) => {
             const trade = state.find(trade => trade.id === action.payload.tradeId);
             if(trade) {
                 trade.transactions.push(action.payload.transaction);
             }
         },
-        updateTransactionOfTrade: (state:Trade[], action:PayloadAction<{tradeId:number, transaction:TradeTransaction}>) => {
+        updateTransactionOfTrade: (state:Trade[], action:PayloadAction<{tradeId:string, transaction:TradeTransaction}>) => {
             const trade = state.find(trade => trade.id === action.payload.tradeId);
             if(trade)
             {
@@ -35,7 +35,7 @@ const tradesSlice = createSlice({
                 }
             }
         },
-        removeTransationFromTrade: (state:Trade[], action:PayloadAction<{tradeId:number, transactionId:number}>) => {
+        removeTransationFromTrade: (state:Trade[], action:PayloadAction<{tradeId:string, transactionId:string}>) => {
             const trade = state.find(trade => trade.id === action.payload.tradeId);
             if(trade)
             {
