@@ -1,11 +1,10 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { TradeTransaction } from "../models/tradeModels";
-
-const initialState:TradeTransaction[] = []
+import { dummyTransactionsData } from "../data/dummyTransactionsData";
 
 const transactionsSlice = createSlice({
     name:'transactions',
-    initialState,
+    initialState: dummyTransactionsData,
     reducers: {
         addTransaction: (state:TradeTransaction[], action:PayloadAction<TradeTransaction>) => {
             state.push(action.payload);
