@@ -3,9 +3,11 @@ import AddTradeButton from "../components/AddTradeButton";
 import TradesList from "../components/TradesList";
 import { useGetAllTrades } from "../hooks/tradeHooks";
 import AddTradeDialog from "../components/AddTradeDialog";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import EditTradeDialog from "../components/EditTradeDialog";
 import { Trade } from "../models/tradeModels";
+import DialogContainer from "../components/DialogContainer";
+import { useCloseDialog, useOpenDialog } from "../hooks/dialogHooks";
 
 const AddTradeButtonContainer = styled.div`
     position: fixed;
@@ -13,54 +15,32 @@ const AddTradeButtonContainer = styled.div`
     right: 20px;
 `
 
-const TradeDialogContainer = styled.div`
-    position: fixed;
-    display: flex;
-    width: 100%;
-    height: 100%;
-    top:0;
-    z-index: 100;
-    justify-content: center;
-    align-items: center;
-    background-color: rgba(0,0,0,.2);
-    backdrop-filter: blur(2px);
-`
-
 const TradesPage = () => {
 
     const trades = useGetAllTrades();
 
-    const [isAddTradeDialogVisible, setIsAddTradeDialogVisible] = useState(false);
-    const [isEditTradeDialogVisible, setIsEditTradeDialogVisible] = useState(false);
     const [selectedTrade, setSelectedTrade] = useState<Trade | null>(null);
-    const addTradeDialogRef = useRef(null);
-    const editTradeDialogRef = useRef(null);
+
+    const openAddDialog = useOpenDialog('add');
+    const closeAddDialog = useCloseDialog('add');
+    const openEditDialog = useOpenDialog('edit');
+    const closeEditDialog = useCloseDialog('edit');
 
     const handleAddTradeOpen = () => {
-        setIsAddTradeDialogVisible(true);
-    }
-
-    const handleAddTradeClose = (e:React.MouseEvent) => {
-        if(addTradeDialogRef.current !== e.target) return;
-        setIsAddTradeDialogVisible(false);
-    }
-
-    const handleEditTradeClose = (e:React.MouseEvent) => {
-        if(editTradeDialogRef.current !== e.target) return;
-        setIsEditTradeDialogVisible(false);
+        openAddDialog();
     }
 
     const handleTradeSelected = (trade:Trade) => {
         setSelectedTrade(trade);
-        setIsEditTradeDialogVisible(true);
+        openEditDialog();
     }
 
     const handleTradeAdded = () => {
-        setIsAddTradeDialogVisible(false);
+        closeAddDialog();
     }
 
     const handleTradeEdited = () => {
-        setIsEditTradeDialogVisible(false);
+        closeEditDialog();
         setSelectedTrade(null);
     }
 
@@ -69,20 +49,14 @@ const TradesPage = () => {
         <AddTradeButtonContainer>
             <AddTradeButton onClick={handleAddTradeOpen}/>
         </AddTradeButtonContainer>
-        {isAddTradeDialogVisible &&
-        <TradeDialogContainer
-            ref={addTradeDialogRef}
-            onClick={handleAddTradeClose}>
+        <DialogContainer dialogName="add">
             <AddTradeDialog onTradeAdded={handleTradeAdded}/>
-        </TradeDialogContainer>}
-        {isEditTradeDialogVisible && selectedTrade && 
-        <TradeDialogContainer
-            ref={editTradeDialogRef}
-            onClick={handleEditTradeClose}>
-            <EditTradeDialog trade={selectedTrade}
+        </DialogContainer>
+        <DialogContainer dialogName="edit">
+            {selectedTrade && <EditTradeDialog trade={selectedTrade}
                 onTradeEdited={handleTradeEdited}
-                onTradeDeleted={handleTradeEdited}/>
-        </TradeDialogContainer>}
+                onTradeDeleted={handleTradeEdited}/>}
+        </DialogContainer>
     </div>;
 }
 
