@@ -1,8 +1,9 @@
 import { useDispatch, useSelector } from "react-redux"
 import { RootState } from "../store";
-import { Trade } from "../models/tradeModels";
+import { Trade, TradeTransaction } from "../models/tradeModels";
 import { useMemo } from "react";
 import { addTrade, removeTrade, updateTrade } from "../slices/tradesSlice";
+import { useGetTransactionsByTradeId } from "./transactionHooks";
 
 export const useGetAllTrades = () => {
     return useSelector((state:RootState) => state.trades);
@@ -16,32 +17,36 @@ export const useGetTradesBySymbol = (symbol:string) => {
 }
 
 export const useTradeFirstDate = (trade:Trade) => {
+    const transactions = useGetTransactionsByTradeId(trade.id);
     return useMemo(() => {
-        if(!trade.transactions) return '-';
-        return new Date(trade.transactions[0].datetime).toLocaleDateString();
-    }, [trade.transactions]);
+        if(!transactions) return '-';
+        return new Date(transactions[0].datetime).toLocaleDateString();
+    }, [transactions]);
 }
 
 export const useTradeEntryPrice = (trade:Trade) => {
+    const transactions = useGetTransactionsByTradeId(trade.id);
     return useMemo(() => {
-        return trade.transactions[0]?.price || '-';
-    }, [trade.transactions]);
+        return transactions[0]?.price || '-';
+    }, [transactions]);
 }
 
 export const useTradeTotalQuantity = (trade:Trade) => {
+    const transactions = useGetTransactionsByTradeId(trade.id);
     return useMemo(() => {
-        return trade.transactions.reduce((total, transaction) => {
+        return transactions.reduce((total:number, transaction:TradeTransaction) => {
             if(transaction.action === 'buy') return total + transaction.quantity;
             return total - transaction.quantity;
         }, 0);
-    }, [trade.transactions]);
+    }, [transactions]);
 }
 
 export const useTradeEntryTotal = (trade:Trade) => {
+    const transactions = useGetTransactionsByTradeId(trade.id);
     return useMemo(() => {
-        if(!trade.transactions) return '-';
-        return trade.transactions[0].price * trade.transactions[0].quantity;
-    }, [trade.transactions]);
+        if(!transactions) return '-';
+        return transactions[0].price * transactions[0].quantity;
+    }, [transactions]);
 }
 
 export const useAddTrade = () => {
