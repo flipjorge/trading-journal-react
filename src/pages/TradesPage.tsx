@@ -3,11 +3,11 @@ import AddTradeButton from "../components/AddTradeButton";
 import TradesList from "../components/TradesList";
 import { useGetAllTrades } from "../hooks/tradeHooks";
 import AddTradeDialog from "../components/AddTradeDialog";
-import { useState } from "react";
 import EditTradeDialog from "../components/EditTradeDialog";
 import { Trade } from "../models/tradeModels";
 import DialogContainer from "../components/DialogContainer";
 import { useCloseDialog, useOpenDialog } from "../hooks/dialogHooks";
+import { useClearSelectedTrade, useSetSelectedTrade } from "../hooks/selectedTradeHooks";
 
 const AddTradeButtonContainer = styled.div`
     position: fixed;
@@ -19,19 +19,20 @@ const TradesPage = () => {
 
     const trades = useGetAllTrades();
 
-    const [selectedTrade, setSelectedTrade] = useState<Trade | null>(null);
-
     const openAddDialog = useOpenDialog('add');
     const closeAddDialog = useCloseDialog('add');
     const openEditDialog = useOpenDialog('edit');
     const closeEditDialog = useCloseDialog('edit');
+
+    const dispatchSetSelectedTrade = useSetSelectedTrade();
+    const dispatchClearSelectedTrade = useClearSelectedTrade();
 
     const handleAddTradeOpen = () => {
         openAddDialog();
     }
 
     const handleTradeSelected = (trade:Trade) => {
-        setSelectedTrade(trade);
+        dispatchSetSelectedTrade(trade);
         openEditDialog();
     }
 
@@ -41,7 +42,7 @@ const TradesPage = () => {
 
     const handleTradeEdited = () => {
         closeEditDialog();
-        setSelectedTrade(null);
+        dispatchClearSelectedTrade();
     }
 
     return <div>
@@ -53,9 +54,9 @@ const TradesPage = () => {
             <AddTradeDialog onTradeAdded={handleTradeAdded}/>
         </DialogContainer>
         <DialogContainer dialogName="edit">
-            {selectedTrade && <EditTradeDialog trade={selectedTrade}
+            <EditTradeDialog
                 onTradeEdited={handleTradeEdited}
-                onTradeDeleted={handleTradeEdited}/>}
+                onTradeDeleted={handleTradeEdited}/>
         </DialogContainer>
     </div>;
 }

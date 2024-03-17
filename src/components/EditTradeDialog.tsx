@@ -2,6 +2,7 @@ import { FormEvent, useEffect, useMemo, useState } from "react";
 import { useDeleteTrade, useEditTrade } from "../hooks/tradeHooks";
 import { Trade, TradeTransaction } from "../models/tradeModels";
 import { Dialog, Title, MainInfoGrid, PositionsGrid, PositionItemRow, AddPositionItemRow } from '../styles/TradeDialog.styles';
+import { useGetSelectedTrade } from "../hooks/selectedTradeHooks";
 
 type FormData = {
     id:number,
@@ -21,14 +22,16 @@ type FormPositionItem = {
 }
 
 type EditTradeDialogProps = {
-    trade:Trade,
     onTradeEdited?: () => void,
     onTradeDeleted?: () => void
 }
 
-const EditTradeDialog = ({trade, onTradeEdited, onTradeDeleted}:EditTradeDialogProps) => {
+const EditTradeDialog = ({onTradeEdited, onTradeDeleted}:EditTradeDialogProps) => {
+
+    const trade = useGetSelectedTrade();
 
     const transactions = useMemo<FormPositionItem[]>(() => {
+        if(trade === null) return [];
         return trade.transactions.map(transaction => ({
             id: transaction.id,
             type: transaction.action,
@@ -37,11 +40,11 @@ const EditTradeDialog = ({trade, onTradeEdited, onTradeDeleted}:EditTradeDialogP
             price: transaction.price,
             fee: transaction.fee
         }));
-    }, [trade.transactions]);
+    }, [trade]);
 
     const [formData, setFormData] = useState<FormData>({
-        id: trade.id,
-        symbol: trade.symbol,
+        id: 0,
+        symbol: '',
         sl: '',
         tp: '',
         positions: transactions
@@ -50,9 +53,10 @@ const EditTradeDialog = ({trade, onTradeEdited, onTradeDeleted}:EditTradeDialogP
     const [nextTransationId, setNextTransationId] = useState(0);
 
     useEffect(() => {
+        if(!trade) return;
         setFormData({
-            id: trade.id,
-            symbol: trade.symbol,
+            id: trade.id || 0,
+            symbol: trade.symbol || '',
             sl: '',
             tp: '',
             positions: transactions
@@ -147,7 +151,7 @@ const EditTradeDialog = ({trade, onTradeEdited, onTradeDeleted}:EditTradeDialogP
     }
 
     const handleDelete = () => {
-        dispatchDeleteTrade(trade);
+        if(trade) dispatchDeleteTrade(trade);
         if(onTradeDeleted) onTradeDeleted();
     }
 
@@ -178,6 +182,7 @@ const EditTradeDialog = ({trade, onTradeEdited, onTradeDeleted}:EditTradeDialogP
     }
 
     return <Dialog>
+        {trade &&
         <form onSubmit={handleSubmit}>
             <Title>Edit Trade</Title>
             <MainInfoGrid>
@@ -225,7 +230,7 @@ const EditTradeDialog = ({trade, onTradeEdited, onTradeDeleted}:EditTradeDialogP
             <div>
                 <button type="button" onClick={handleDelete}>Delete Trade</button>
             </div>
-        </form>
+        </form>}
     </Dialog>
 }
 
