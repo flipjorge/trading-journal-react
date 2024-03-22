@@ -33,10 +33,10 @@ type Props = {
 const defaultPosition:FormTransactionItem = {
     id:'',
     type: "buy",
-    datetime: convertDateToInputFormat(new Date()),
-    price: 0,
-    quantity: 0,
-    fee: 0
+    datetime: undefined,
+    price: undefined,
+    quantity: undefined,
+    fee: undefined
 }
 
 const TradeDialog = ({onTradeSaved, onTradeDeleted}:Props) => {
@@ -81,7 +81,7 @@ const TradeDialog = ({onTradeSaved, onTradeDeleted}:Props) => {
         }];
     }, [trade, transactions, generateTradeId]);
 
-    const { register, control, handleSubmit, getValues, setValue, watch } = useForm<FormData>({
+    const { register, control, handleSubmit, getValues, setValue, watch, formState: { errors } } = useForm<FormData>({
         defaultValues: {
             id: trade?.id || generateTradeId(),
             symbol: trade?.symbol || '',
@@ -176,10 +176,16 @@ const TradeDialog = ({onTradeSaved, onTradeDeleted}:Props) => {
                 <label htmlFor="symbol">Token</label>
                 <label htmlFor="sl">Stop Loss</label>
                 <label htmlFor="tp">TakeProfit</label>
-                <input id="symbol" {...register("symbol")} placeholder="Eg. btc, etg, link, avax..." required/>
-                <input id="sl" {...register("sl")} type="number" placeholder="Eg. 21.3456"/>
-                <input id="tp" {...register("tp")} type="number" placeholder="Eg. 22.3456"/>
+                <input id="symbol" {...register("symbol", { required:true })}
+                    placeholder="Eg. btc, etg, link, avax..."/>
+                <input id="sl" {...register("sl")}
+                    type="number"
+                    placeholder="Eg. 21.3456"/>
+                <input id="tp" {...register("tp")}
+                    type="number"
+                    placeholder="Eg. 22.3456"/>
             </MainInfoGrid>
+            {errors.symbol && <div>Symbol is required</div>}
             <PositionsGrid>
                 <div>Position Type</div>
                 <div>Date/Time</div>
@@ -193,10 +199,30 @@ const TradeDialog = ({onTradeSaved, onTradeDeleted}:Props) => {
                         <button type="button" onClick={() => remove(index)}>x</button>
                         <button type="button" onClick={() => handlePositionTypeToogle(index)}>{watchedPositions[index].type === "buy" ? "Buy/Long" : "Sell/Short"}</button>
                     </div>
-                    <input {...register(`positions.${index}.datetime`)} type="datetime-local" placeholder="Eg. 06/16/2022 01:01 PM"/>
-                    <input {...register(`positions.${index}.quantity`)} type="number" placeholder="Eg. 3.21"/>
-                    <input {...register(`positions.${index}.price`)} type="number" placeholder="Eg. 123.02"/>
-                    <input {...register(`positions.${index}.fee`)} type="number" placeholder="Eg. 0.05"/>
+                    <input {...register(`positions.${index}.datetime`, {
+                            required:true
+                        })}
+                        type="datetime-local"
+                        placeholder="Eg. 06/16/2022 01:01 PM"
+                        className={errors.positions && errors.positions[index]?.datetime ? 'invalidInput' : ''}/>
+                    <input {...register(`positions.${index}.quantity`, {
+                            required:true
+                        })}
+                        type="number" step="any"
+                        placeholder="Eg. 3.21"
+                        className={errors.positions && errors.positions[index]?.quantity ? 'invalidInput' : ''}/>
+                    <input {...register(`positions.${index}.price`, {
+                            required:true
+                        })}
+                        type="number" step="any"
+                        placeholder="Eg. 123.02"
+                        className={errors.positions && errors.positions[index]?.price ? 'invalidInput' : ''}/>
+                    <input {...register(`positions.${index}.fee`, {
+                            required:true
+                        })}
+                        type="number" step="any"
+                        placeholder="Eg. 0.05"
+                        className={errors.positions && errors.positions[index]?.fee ? 'invalidInput' : ''}/>
                 </PositionItemRow>
                 ))}
 
