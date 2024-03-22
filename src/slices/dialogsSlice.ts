@@ -1,10 +1,9 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
-export type DialogName = 'add' | 'edit';
+export type DialogName = 'trade';
 
 export type Dialogs = {
-    add:boolean,
-    edit:boolean,
+    trade:boolean,
 }
 
 export type DialogPayload = {
@@ -13,8 +12,7 @@ export type DialogPayload = {
 }
 
 const initialState:Dialogs = {
-    add:false,
-    edit:false
+    trade:false,
 }
 
 const dialogsSlice = createSlice({

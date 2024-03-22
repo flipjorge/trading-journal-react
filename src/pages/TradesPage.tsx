@@ -2,8 +2,7 @@ import styled from "styled-components";
 import AddTradeButton from "../components/AddTradeButton";
 import TradesList from "../components/TradesList";
 import { useGetAllTrades } from "../hooks/tradeHooks";
-import AddTradeDialog from "../components/AddTradeDialog";
-import EditTradeDialog from "../components/EditTradeDialog";
+import TradeDialog from "../components/TradeDialog";
 import { Trade } from "../models/tradeModels";
 import DialogContainer from "../components/DialogContainer";
 import { useCloseDialog, useOpenDialog } from "../hooks/dialogHooks";
@@ -19,29 +18,24 @@ const TradesPage = () => {
 
     const trades = useGetAllTrades();
 
-    const openAddDialog = useOpenDialog('add');
-    const closeAddDialog = useCloseDialog('add');
-    const openEditDialog = useOpenDialog('edit');
-    const closeEditDialog = useCloseDialog('edit');
+    const openTradeDialog = useOpenDialog('trade');
+    const closeTradeDialog = useCloseDialog('trade');
 
     const dispatchSetSelectedTrade = useSetSelectedTrade();
     const dispatchClearSelectedTrade = useClearSelectedTrade();
 
     const handleAddTradeOpen = () => {
-        openAddDialog();
+        dispatchClearSelectedTrade();
+        openTradeDialog();
     }
 
     const handleTradeSelected = (trade:Trade) => {
         dispatchSetSelectedTrade(trade);
-        openEditDialog();
+        openTradeDialog();
     }
 
-    const handleTradeAdded = () => {
-        closeAddDialog();
-    }
-
-    const handleTradeEdited = () => {
-        closeEditDialog();
+    const handleTradeSaved = () => {
+        closeTradeDialog();
         dispatchClearSelectedTrade();
     }
 
@@ -50,13 +44,10 @@ const TradesPage = () => {
         <AddTradeButtonContainer>
             <AddTradeButton onClick={handleAddTradeOpen}/>
         </AddTradeButtonContainer>
-        <DialogContainer dialogName="add">
-            <AddTradeDialog onTradeAdded={handleTradeAdded}/>
-        </DialogContainer>
-        <DialogContainer dialogName="edit">
-            <EditTradeDialog
-                onTradeEdited={handleTradeEdited}
-                onTradeDeleted={handleTradeEdited}/>
+        <DialogContainer dialogName="trade">
+            <TradeDialog
+                onTradeSaved={handleTradeSaved}
+                onTradeDeleted={handleTradeSaved}/>
         </DialogContainer>
     </div>;
 }
