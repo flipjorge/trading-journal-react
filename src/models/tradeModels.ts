@@ -1,6 +1,8 @@
 export type Trade = {
     id: string,
-    symbol: string
+    symbol: string,
+    sl: number | undefined,
+    tp: number | undefined
 }
 
 export type Transaction = {
