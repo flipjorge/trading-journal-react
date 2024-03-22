@@ -1,4 +1,4 @@
-import { FormEvent, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { useAddTrade, useDeleteTrade, useEditTrade } from "../hooks/tradeHooks";
 import { Trade, Transaction } from "../models/tradeModels";
 import { Dialog, Title, MainInfoGrid, PositionsGrid, PositionItemRow, AddPositionItemRow } from '../styles/TradeDialog.styles';
@@ -6,6 +6,7 @@ import { useGenerateUUID } from "../hooks/uuidHooks";
 import { useGetTransactionsByTradeId, useRemoveTransactionsByTradeId, useSetTransactionsForTrade } from "../hooks/transactionHooks";
 import { useGetSelectedTrade } from "../hooks/selectedTradeHooks";
 import { convertDateToInputFormat } from "../utils/dateTimeUtils";
+import { useForm, SubmitHandler, useFieldArray } from "react-hook-form"
 
 type FormData = {
     id:string,
@@ -29,10 +30,16 @@ type Props = {
     onTradeDeleted?: () => void
 }
 
-const TradeDialog = ({onTradeSaved, onTradeDeleted}:Props) => {
+const defaultPosition:FormTransactionItem = {
+    id:'',
+    type: "buy",
+    datetime: convertDateToInputFormat(new Date()),
+    price: 0,
+    quantity: 0,
+    fee: 0
+}
 
-    const trade = useGetSelectedTrade();
-    const transactions = useGetTransactionsByTradeId(trade?.id || '');
+const TradeDialog = ({onTradeSaved, onTradeDeleted}:Props) => {
 
     const dispatchAddTrade = useAddTrade();
     const dispatchEditTrade = useEditTrade();
@@ -40,6 +47,9 @@ const TradeDialog = ({onTradeSaved, onTradeDeleted}:Props) => {
     const dispatchSetTransactions = useSetTransactionsForTrade();
     const dispatchDeleteTransactionsById = useRemoveTransactionsByTradeId();
     const generateTradeId = useGenerateUUID();
+
+    const trade = useGetSelectedTrade();
+    const transactions = useGetTransactionsByTradeId(trade?.id || '');
 
     const formTransactions = useMemo<FormTransactionItem[]>(() => {
         if(trade) {
@@ -71,98 +81,42 @@ const TradeDialog = ({onTradeSaved, onTradeDeleted}:Props) => {
         }];
     }, [trade, transactions, generateTradeId]);
 
-    const [formData, setFormData] = useState<FormData>({
-        id: trade?.id || generateTradeId(),
-        symbol: trade?.symbol || '',
-        sl: trade?.sl || undefined,
-        tp: trade?.tp || undefined,
-        positions: formTransactions
+    const { register, control, handleSubmit, getValues, setValue, watch } = useForm<FormData>({
+        defaultValues: {
+            id: trade?.id || generateTradeId(),
+            symbol: trade?.symbol || '',
+            sl: trade?.sl || undefined,
+            tp: trade?.tp || undefined,
+            positions: formTransactions
+        }
     });
 
-    const handleChange = (event:FormEvent<HTMLInputElement>) => {
-        const target = event.target as HTMLInputElement;
+    const { fields, append, remove } = useFieldArray({
+        control,
+        name: "positions"
+    });
 
-        setFormData({
-            ...formData,
-            [target.name]: target.value
+    const watchedPositions = watch("positions");
+
+    const handlePositionTypeToogle = (index:number) => {
+        const currentType = getValues(`positions.${index}.type`);
+        const newType = currentType === 'buy' ? 'sell' : 'buy';
+
+        setValue(`positions.${index}.type`, newType, {
+            shouldDirty: true
         });
     }
 
-    const handlePositionItemChange = (index:number, name:string, value:string) => {
-        const updatePositions:FormTransactionItem[] = formData.positions.map((position, i) => {
-            if(i === index) return {
-                ...position,
-                [name]: value
-            };
-            return position;
-        });
+    const handleOnSubmit: SubmitHandler<FormData> = (data) => {
+        const updatedTrade = convertFormDataToTrade(data);
 
-        setFormData({
-            ...formData,
-            positions:updatePositions
-        });
-    }
-
-    const handlePositionItemTypeChange = (index:number) => {
-        const updatePositions:FormTransactionItem[] = formData.positions.map((position, i) => {
-            if(i === index) return {
-                ...position,
-                type: position.type === 'buy' ? 'sell' : 'buy'
-            };
-            return position;
-        });
-
-        setFormData({
-            ...formData,
-            positions:updatePositions
-        });
-    }
-
-    const handleAddTransactionClick = () => {
-
-        const newPositionItem:FormTransactionItem = {
-            id:generateTradeId(),
-            type: "buy",
-            datetime: convertDateToInputFormat(new Date()),
-            price: 0,
-            quantity: 0,
-            fee: 0
-        }
-
-        const updatedPositions = [
-            ...formData.positions,
-            newPositionItem
-        ]
-
-        setFormData({
-            ...formData,
-            positions: updatedPositions
-        })
-    }
-
-    const handleRemovePositionClick = (index:number) => {
-
-        const updatedPositions = formData.positions.filter((_item, currentIndex) =>
-            index !== currentIndex
-        );
-
-        setFormData({
-            ...formData,
-            positions: updatedPositions
-        })
-    }
-
-    const handleSubmit = (event:FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-        
-        const updatedTrade = convertFormDataToTrade(formData);
         if(trade){
             dispatchEditTrade(updatedTrade);
         } else {
             dispatchAddTrade(updatedTrade);
         }
         
-        const transactions = convertFormDataToTransactions(formData, updatedTrade.id);
+        const transactions = convertFormDataToTransactions(data, updatedTrade.id);
         dispatchSetTransactions(updatedTrade.id, transactions);
         
         if(onTradeSaved) onTradeSaved();
@@ -216,15 +170,15 @@ const TradeDialog = ({onTradeSaved, onTradeDeleted}:Props) => {
     }
 
     return <Dialog>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit(handleOnSubmit)}>
             <Title>{trade ? 'Edit Trade' : 'New Trade'}</Title>
             <MainInfoGrid>
                 <label htmlFor="symbol">Token</label>
                 <label htmlFor="sl">Stop Loss</label>
                 <label htmlFor="tp">TakeProfit</label>
-                <input id="symbol" name="symbol" value={formData.symbol} onChange={handleChange} placeholder="Eg. btc, etg, link, avax..." required/>
-                <input id="sl" name="sl" value={formData.sl} onChange={handleChange} type="number" placeholder="Eg. 21.3456"/>
-                <input id="tp" name="tp" value={formData.tp} onChange={handleChange} type="number" placeholder="Eg. 22.3456"/>
+                <input id="symbol" {...register("symbol")} placeholder="Eg. btc, etg, link, avax..." required/>
+                <input id="sl" {...register("sl")} type="number" placeholder="Eg. 21.3456"/>
+                <input id="tp" {...register("tp")} type="number" placeholder="Eg. 22.3456"/>
             </MainInfoGrid>
             <PositionsGrid>
                 <div>Position Type</div>
@@ -233,27 +187,21 @@ const TradeDialog = ({onTradeSaved, onTradeDeleted}:Props) => {
                 <div>Price</div>
                 <div>Fee</div>
 
-                {formData.positions.map((item, index) => {
-
-                    const currentPosition = formData.positions[index];
-                    const quantityValue = currentPosition.quantity !== undefined ? currentPosition.quantity : '';
-                    const priceValue = currentPosition.price !== undefined ? currentPosition.price : '';
-                    const feeValue = currentPosition.fee !== undefined ? currentPosition.fee : '';
-
-                    return <PositionItemRow key={index}>
-                        <div>
-                            <button type="button" onClick={() => handleRemovePositionClick(index)}>x</button>
-                            <button type="button" onClick={() => handlePositionItemTypeChange(index)}>{item.type === "buy" ? "Buy/Long" : "Sell/Short"}</button>
-                        </div>
-                        <input name="datetime" value={currentPosition.datetime} onChange={e => handlePositionItemChange(index, e.target.name, e.target.value)} type="datetime-local" placeholder="Eg. 06/16/2022 01:01 PM"/>
-                        <input name="quantity" value={quantityValue} onChange={e => handlePositionItemChange(index, e.target.name, e.target.value)} type="number" placeholder="Eg. 3.21"/>
-                        <input name="price" value={priceValue} onChange={e => handlePositionItemChange(index, e.target.name, e.target.value)} type="number" placeholder="Eg. 123.02"/>
-                        <input name="fee" value={feeValue} onChange={e => handlePositionItemChange(index, e.target.name, e.target.value)} type="number" placeholder="Eg. 0.05"/>
-                    </PositionItemRow>
-                })}
+                {fields.map((item, index) => (
+                <PositionItemRow key={item.id}>
+                    <div>
+                        <button type="button" onClick={() => remove(index)}>x</button>
+                        <button type="button" onClick={() => handlePositionTypeToogle(index)}>{watchedPositions[index].type === "buy" ? "Buy/Long" : "Sell/Short"}</button>
+                    </div>
+                    <input {...register(`positions.${index}.datetime`)} type="datetime-local" placeholder="Eg. 06/16/2022 01:01 PM"/>
+                    <input {...register(`positions.${index}.quantity`)} type="number" placeholder="Eg. 3.21"/>
+                    <input {...register(`positions.${index}.price`)} type="number" placeholder="Eg. 123.02"/>
+                    <input {...register(`positions.${index}.fee`)} type="number" placeholder="Eg. 0.05"/>
+                </PositionItemRow>
+                ))}
 
                 <AddPositionItemRow>
-                    <button type="button" onClick={handleAddTransactionClick}>+</button>
+                    <button type="button" onClick={() => append(defaultPosition)}>+</button>
                     <div>Add accordingly if you are closing partial positions, or adding to your positions</div>
                 </AddPositionItemRow>
             </PositionsGrid>
