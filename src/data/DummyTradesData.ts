@@ -3,13 +3,19 @@ import { Trade } from "../models/tradeModels"
 export const dummyData:Trade[] = [
     {
         id: '0',
-        symbol: 'btc'
+        symbol: 'btc',
+        sl: undefined,
+        tp: undefined
     },
     {
         id: '1',
-        symbol: 'btc'
+        symbol: 'btc',
+        sl: undefined,
+        tp: undefined
     },{
         id: '2',
-        symbol: 'eth'
+        symbol: 'eth',
+        sl: undefined,
+        tp: undefined
     }
 ];
