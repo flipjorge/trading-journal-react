@@ -5,6 +5,7 @@ import { useTradeEntryPrice, useTradeEntryTotal,
 
 const Item = styled.div`
     display: contents;
+    cursor: pointer;
     
     div {
         display: flex;

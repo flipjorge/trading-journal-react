@@ -47,6 +47,7 @@ export const ClosePositionButton = styled.button`
     height: 12px;
     background-color: transparent;
     stroke: ${props => props.theme.icons};
+    cursor: pointer;
 
     svg {
         width: 12px;
@@ -61,6 +62,7 @@ export const ClosePositionButton = styled.button`
 export const TypePositionButton = styled.button<{$state:'buy' | 'sell'}>`
     height: 62px;
     border-radius: 20px;
+    cursor: pointer;
 
     background-color: ${props => props.$state === 'buy'
         ? props.theme.winBackground
@@ -75,6 +77,7 @@ export const MainInfoGrid = styled.div`
     display: grid;
     grid-template-columns: 2fr 1fr 1fr;
     grid-column-gap: 15px;
+    margin-bottom: 43px;
 `
 
 export const PositionsGrid = styled.div`
@@ -112,6 +115,7 @@ export const AddPositionButton = styled.button`
     border-radius: 20px;
     stroke: ${props => props.theme.skeleton};
     font-style: italic;
+    cursor: pointer;
 
     svg {
         width: 26px;
@@ -154,7 +158,8 @@ export const DeleteButton = styled.button`
     height: 50px;
     background-color: ${props => props.theme.dangerAction};
     border-radius: 20px;
-    color: ${props => props.theme.default};
+    color: ${props => props.theme.lossFont};
+    cursor: pointer;
 `
 
 export const SaveButton = styled.button`
@@ -167,4 +172,5 @@ export const SaveButton = styled.button`
     border-radius: 20px;
     font-size: 1.25rem;
     color: ${props => props.theme.default};
+    cursor: pointer;
 `
