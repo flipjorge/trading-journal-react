@@ -12,24 +12,6 @@ const Grid = styled.div`
     row-gap: 24px;
     overflow-y: auto;
     max-height: 100vh;
-
-    &::-webkit-scrollbar-track {
-        background-color: ${props => props.theme.primaryBackground};
-    }
-
-    &::-webkit-scrollbar-thumb {
-        background-color: ${props => props.theme.secondaryBackground};
-        border-radius: 10px;
-    }
-
-    &::-webkit-scrollbar-thumb:hover {
-        background: white;
-    }
-
-    &::-webkit-scrollbar {
-        width: 6px;
-    }
-
 `
 
 const HeadRow = styled.div`

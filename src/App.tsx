@@ -21,9 +21,9 @@ const AppStyle = styled.div`
 const App = () => {
 
     return <>
-        <GlobalStyle/>
         <StrictMode>
             <ThemeProvider theme={DarkTheme}>
+                <GlobalStyle/>
                 <Provider store={store}>
                     <AppStyle>
                         <LeftPanel/>

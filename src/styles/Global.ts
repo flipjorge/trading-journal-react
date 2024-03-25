@@ -20,6 +20,23 @@ const GlobalStyles = createGlobalStyle`
         border-collapse: collapse;
     }
 
+    *::-webkit-scrollbar-track {
+        background-color: ${props => props.theme.primaryBackground};
+    }
+
+    *::-webkit-scrollbar-thumb {
+        background-color: ${props => props.theme.secondaryBackground};
+        border-radius: 10px;
+    }
+
+    *::-webkit-scrollbar-thumb:hover {
+        background: white;
+    }
+
+    *::-webkit-scrollbar {
+        width: 6px;
+    }
+
     .invalidInput {
         border: 2px red solid;
     }
