@@ -20,6 +20,17 @@ const GlobalStyles = createGlobalStyle`
         border-collapse: collapse;
     }
 
+    input, button {
+        border: none;
+        outline: none;
+        box-shadow: none;
+    }
+
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+    }
+
     *::-webkit-scrollbar-track {
         background-color: ${props => props.theme.primaryBackground};
     }

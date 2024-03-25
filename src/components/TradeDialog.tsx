@@ -1,13 +1,15 @@
 import { useMemo } from "react";
 import { useAddTrade, useDeleteTrade, useEditTrade } from "../hooks/tradeHooks";
 import { Trade, Position } from "../models/tradeModels";
-import { Dialog, Title, MainInfoGrid, PositionsGrid, PositionItemRow, AddPositionItemRow } from '../styles/TradeDialog.styles';
+import * as Styles from '../styles/TradeDialog.styles';
 import { useGenerateUUID } from "../hooks/uuidHooks";
 import { useGetPositionsByTradeId, useRemovePositionsByTradeId, useSetPositionsForTrade } from "../hooks/positionHooks";
 import { useClearSelectedTrade, useGetSelectedTrade } from "../hooks/selectedTradeHooks";
 import { convertDateToInputFormat } from "../utils/dateTimeUtils";
 import { useForm, SubmitHandler, useFieldArray } from "react-hook-form"
 import { useCloseDialog } from "../hooks/dialogHooks";
+import AddIcon from "../assets/add-icon-no-border.svg?react";
+import RemoveIcon from "../assets/remove-icon.svg?react";
 
 type FormData = {
     id:string,
@@ -169,76 +171,75 @@ const TradeDialog = () => {
         return positions;
     }
 
-    return <Dialog>
+    return <Styles.Dialog>
+        <Styles.Title>{trade ? 'Edit Trade' : 'New Trade'}</Styles.Title>
         <form onSubmit={handleSubmit(handleOnSubmit)}>
-            <Title>{trade ? 'Edit Trade' : 'New Trade'}</Title>
-            <MainInfoGrid>
-                <label htmlFor="symbol">Token</label>
-                <label htmlFor="sl">Stop Loss</label>
-                <label htmlFor="tp">TakeProfit</label>
-                <input id="symbol" {...register("symbol", { required:true })}
-                    placeholder="Eg. btc, etg, link, avax..."/>
-                <input id="sl" {...register("sl")}
-                    type="number"
-                    placeholder="Eg. 21.3456"/>
-                <input id="tp" {...register("tp")}
-                    type="number"
-                    placeholder="Eg. 22.3456"/>
-            </MainInfoGrid>
-            {errors.symbol && <div>Symbol is required</div>}
-            <PositionsGrid>
-                <div>Position Type</div>
-                <div>Date/Time</div>
-                <div>Quantity</div>
-                <div>Price</div>
-                <div>Fee</div>
+            <Styles.Content>
+                <Styles.MainInfoGrid>
+                    <Styles.Label>Token</Styles.Label>
+                    <Styles.Label>Stop Loss</Styles.Label>
+                    <Styles.Label>TakeProfit</Styles.Label>
+                    <Styles.Input id="symbol" {...register("symbol", { required:true })}
+                        placeholder="Eg. btc, etg, link, avax..."/>
+                    <Styles.Input id="sl" {...register("sl")}
+                        type="number"
+                        placeholder="Eg. 21.3456"/>
+                    <Styles.Input id="tp" {...register("tp")}
+                        type="number"
+                        placeholder="Eg. 22.3456"/>
+                </Styles.MainInfoGrid>
+                {errors.symbol && <div>Symbol is required</div>}
+                <Styles.PositionsGrid>
+                    <Styles.Label $span={2}>Position Type</Styles.Label>
+                    <Styles.Label>Date/Time</Styles.Label>
+                    <Styles.Label>Quantity</Styles.Label>
+                    <Styles.Label>Price</Styles.Label>
+                    <Styles.Label>Fee</Styles.Label>
 
-                {fields.map((item, index) => (
-                <PositionItemRow key={item.id}>
-                    <div>
-                        <button type="button" onClick={() => remove(index)}>x</button>
-                        <button type="button" onClick={() => handlePositionTypeToogle(index)}>{watchedPositions[index].type === "buy" ? "Buy/Long" : "Sell/Short"}</button>
-                    </div>
-                    <input {...register(`positions.${index}.datetime`, {
-                            required:true
-                        })}
-                        type="datetime-local"
-                        placeholder="Eg. 06/16/2022 01:01 PM"
-                        className={errors.positions && errors.positions[index]?.datetime ? 'invalidInput' : ''}/>
-                    <input {...register(`positions.${index}.quantity`, {
-                            required:true
-                        })}
-                        type="number" step="any"
-                        placeholder="Eg. 3.21"
-                        className={errors.positions && errors.positions[index]?.quantity ? 'invalidInput' : ''}/>
-                    <input {...register(`positions.${index}.price`, {
-                            required:true
-                        })}
-                        type="number" step="any"
-                        placeholder="Eg. 123.02"
-                        className={errors.positions && errors.positions[index]?.price ? 'invalidInput' : ''}/>
-                    <input {...register(`positions.${index}.fee`, {
-                            required:true
-                        })}
-                        type="number" step="any"
-                        placeholder="Eg. 0.05"
-                        className={errors.positions && errors.positions[index]?.fee ? 'invalidInput' : ''}/>
-                </PositionItemRow>
-                ))}
+                    {fields.map((item, index) => (
+                    <Styles.PositionItemRow key={item.id}>
+                        <Styles.ClosePositionButton type="button" onClick={() => remove(index)}><RemoveIcon/></Styles.ClosePositionButton>
+                        <Styles.TypePositionButton type="button" onClick={() => handlePositionTypeToogle(index)} $state={watchedPositions[index].type}>{watchedPositions[index].type === "buy" ? "Buy/Long" : "Sell/Short"}</Styles.TypePositionButton>
+                        <Styles.Input {...register(`positions.${index}.datetime`, {
+                                required:true
+                            })}
+                            type="datetime-local"
+                            placeholder="Eg. 06/16/2022 01:01 PM"
+                            className={errors.positions && errors.positions[index]?.datetime ? 'invalidInput' : ''}/>
+                        <Styles.Input {...register(`positions.${index}.quantity`, {
+                                required:true
+                            })}
+                            type="number" step="any"
+                            placeholder="Eg. 3.21"
+                            className={errors.positions && errors.positions[index]?.quantity ? 'invalidInput' : ''}/>
+                        <Styles.Input {...register(`positions.${index}.price`, {
+                                required:true
+                            })}
+                            type="number" step="any"
+                            placeholder="Eg. 123.02"
+                            className={errors.positions && errors.positions[index]?.price ? 'invalidInput' : ''}/>
+                        <Styles.Input {...register(`positions.${index}.fee`, {
+                                required:true
+                            })}
+                            type="number" step="any"
+                            placeholder="Eg. 0.05"
+                            className={errors.positions && errors.positions[index]?.fee ? 'invalidInput' : ''}/>
+                    </Styles.PositionItemRow>
+                    ))}
 
-                <AddPositionItemRow>
-                    <button type="button" onClick={() => append(defaultPosition)}>+</button>
-                    <div>Add accordingly if you are closing partial positions, or adding to your positions</div>
-                </AddPositionItemRow>
-            </PositionsGrid>
-            <div>
-                <button type="submit">'Save Trade'</button>
-            </div>
-            {trade && <div>
-                <button type="button" onClick={handleDelete}>Delete Trade</button>
-            </div>}
+                    <Styles.AddPositionItemRow>
+                        <Styles.AddPositionButton type="button" onClick={() => append(defaultPosition)}><AddIcon/></Styles.AddPositionButton>
+                        <Styles.AddPositionHint>Add accordingly if you are closing partial positions, or adding to your positions</Styles.AddPositionHint>
+                    </Styles.AddPositionItemRow>
+                </Styles.PositionsGrid>
+                <Styles.ActionsContainer>
+                    <Styles.EmptyButton/>
+                    <Styles.SaveButton type="submit">Save Trade</Styles.SaveButton>
+                    {trade ? <Styles.DeleteButton type="button" onClick={handleDelete}>Delete Trade</Styles.DeleteButton> : <Styles.EmptyButton/>}
+                </Styles.ActionsContainer>
+            </Styles.Content>
         </form>
-    </Dialog>
+    </Styles.Dialog>
 }
 
 export default TradeDialog;

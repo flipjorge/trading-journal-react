@@ -3,13 +3,16 @@ const DarkTheme = {
     secondaryBackground: "#0B111C",
     default: "#FFF",
     label: "#59636F",
-    winBackground: "A7BAD1",
-    lossBackground: "1EAF83",
-    winFont: "1EAF83",
-    lossFont: "FF7395",
-    action: "0079FF",
+    winBackground: "#1EAF8333",
+    lossBackground: "#E6658433",
+    winFont: "#23D39E",
+    lossFont: "#FF7395",
+    action: "#0079FF",
+    dangerAction: "#E6658433",
     icons: "#FFF",
-    iconsHover: "#0079FF"
+    iconsHover: "#0079FF",
+    border: "#1D273B",
+    skeleton: "#2E4163",
 }
 
 export default DarkTheme;
