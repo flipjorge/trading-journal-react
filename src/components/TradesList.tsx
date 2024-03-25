@@ -4,6 +4,7 @@ import TradesListItem from './TradesListItem';
 
 const List = styled.div`
     display: block;
+    position: relative;
     margin: 16px;
     
     .header {

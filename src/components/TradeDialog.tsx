@@ -4,9 +4,10 @@ import { Trade, Position } from "../models/tradeModels";
 import { Dialog, Title, MainInfoGrid, PositionsGrid, PositionItemRow, AddPositionItemRow } from '../styles/TradeDialog.styles';
 import { useGenerateUUID } from "../hooks/uuidHooks";
 import { useGetPositionsByTradeId, useRemovePositionsByTradeId, useSetPositionsForTrade } from "../hooks/positionHooks";
-import { useGetSelectedTrade } from "../hooks/selectedTradeHooks";
+import { useClearSelectedTrade, useGetSelectedTrade } from "../hooks/selectedTradeHooks";
 import { convertDateToInputFormat } from "../utils/dateTimeUtils";
 import { useForm, SubmitHandler, useFieldArray } from "react-hook-form"
+import { useCloseDialog } from "../hooks/dialogHooks";
 
 type FormData = {
     id:string,
@@ -25,11 +26,6 @@ type FormPositionItem = {
     fee:number | undefined
 }
 
-type Props = {
-    onTradeSaved?: () => void,
-    onTradeDeleted?: () => void
-}
-
 const defaultPosition:FormPositionItem = {
     id:'',
     type: "buy",
@@ -39,13 +35,15 @@ const defaultPosition:FormPositionItem = {
     fee: undefined
 }
 
-const TradeDialog = ({onTradeSaved, onTradeDeleted}:Props) => {
+const TradeDialog = () => {
 
     const dispatchAddTrade = useAddTrade();
     const dispatchEditTrade = useEditTrade();
     const dispatchDeleteTrade = useDeleteTrade();
     const dispatchSetPositions = useSetPositionsForTrade();
     const dispatchDeletePositionsById = useRemovePositionsByTradeId();
+    const dispatchClearSelectedTrade = useClearSelectedTrade();
+    const dispatchCloseTradeDialog = useCloseDialog('trade');
     const generateTradeId = useGenerateUUID();
 
     const trade = useGetSelectedTrade();
@@ -119,7 +117,8 @@ const TradeDialog = ({onTradeSaved, onTradeDeleted}:Props) => {
         const positions = convertFormDataToPositions(data, updatedTrade.id);
         dispatchSetPositions(updatedTrade.id, positions);
         
-        if(onTradeSaved) onTradeSaved();
+        dispatchClearSelectedTrade();
+        dispatchCloseTradeDialog();
     }
 
     const handleDelete = () => {
@@ -129,7 +128,8 @@ const TradeDialog = ({onTradeSaved, onTradeDeleted}:Props) => {
         dispatchDeleteTrade(trade);
         dispatchDeletePositionsById(trade.id);
         
-        if(onTradeDeleted) onTradeDeleted();
+        dispatchClearSelectedTrade();
+        dispatchCloseTradeDialog();
     }
 
     const convertFormDataToTrade = (data:FormData) => {
