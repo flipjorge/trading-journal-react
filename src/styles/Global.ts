@@ -8,7 +8,7 @@ const GlobalStyles = createGlobalStyle`
     }
 
     body, html {
-        font-family: 'Roboto', sans-serif;
+        font-family: 'Poppins', sans-serif;
         overflow: hidden;
     }
 
