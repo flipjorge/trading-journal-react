@@ -3,15 +3,26 @@ import { Trade } from "../models/tradeModels";
 import { useTradeEntryPrice, useTradeEntryTotal,
     useTradeFirstDate, useTradeTotalQuantity } from "../hooks/tradeHooks";
 
-const Item = styled.li`
-    display: flex;
-    justify-content: space-between;
-    padding: 5px 10px;
-    border-radius: 10px;
-    background-color: lightgray;
-    border: 1px solid gray;
-    font-size: 1.8;
-    text-transform: uppercase;
+const Item = styled.div`
+    display: contents;
+    
+    div {
+        display: flex;
+        align-items: center;
+        box-sizing: border-box;
+        height: 86px;
+        padding: 26px 4px;
+        background-color: ${props => props.theme.secondaryBackground};
+    }
+
+    div:first-child {
+        border-radius: 10px 0 0 10px;
+        padding-left: 36px;
+    }
+
+    div:last-child {
+        border-radius: 0 10px 10px 0;
+    }
 `
 
 type TradeListItemProps = {
@@ -35,6 +46,11 @@ const TradesListItem = ({trade, onSelected}:TradeListItemProps) => {
         <div>{trade.symbol}</div>
         <div>{entryPrice}</div>
         <div>{entryTotal}</div>
+        <div>{totalQuantity}</div>
+        <div>{totalQuantity}</div>
+        <div>{totalQuantity}</div>
+        <div>{totalQuantity}</div>
+        <div>{totalQuantity}</div>
         <div>{totalQuantity}</div>
     </Item>
 };

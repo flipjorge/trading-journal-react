@@ -17,9 +17,9 @@ const TradesPage = () => {
         openTradeDialog();
     }
 
-    return <div>
+    return <>
         <TradesList trades={trades} onTradeSelected={handleTradeSelected}/>
-    </div>;
+    </>;
 }
 
 export default TradesPage;

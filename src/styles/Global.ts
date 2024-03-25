@@ -12,6 +12,14 @@ const GlobalStyles = createGlobalStyle`
         overflow: hidden;
     }
 
+    ul {
+        list-style-type: none;
+    }
+
+    table {
+        border-collapse: collapse;
+    }
+
     .invalidInput {
         border: 2px red solid;
     }

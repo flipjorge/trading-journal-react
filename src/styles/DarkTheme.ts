@@ -2,7 +2,7 @@ const DarkTheme = {
     primaryBackground: "#00050E",
     secondaryBackground: "#0B111C",
     default: "#FFF",
-    label: "A7BAD1",
+    label: "#59636F",
     winBackground: "A7BAD1",
     lossBackground: "1EAF83",
     winFont: "1EAF83",
