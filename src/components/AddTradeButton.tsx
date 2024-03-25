@@ -1,30 +1,36 @@
 import styled from "styled-components";
+import AddIcon from "../assets/add-icon.svg?react";
 
 const Button = styled.a`
-        display: flex;
-        position: relative;
-        width: 80px;
-        height: 80px;
-        border-radius: 100%;
-        justify-content: center;
-        align-items: center;
-        background-color: blue;
-        cursor: pointer;
-        color: white;
-        font-size: 50px;
-        font-weight: bold;
+    display: flex;
+    position: relative;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    stroke: ${props => props.theme.icons};
 
-        &:hover{
-            background-color: darkblue;
-        }
-    `
+    svg {
+        width: 30px;
+        height: 30px;
+    }
 
-type AddTradeButtonProps = {
+    &:hover{
+        stroke: ${props => props.theme.iconsHover};
+    }
+`
+
+type Props = {
     onClick:() => void
 }
 
-const AddTradeButton = ({onClick}:AddTradeButtonProps) => {
-    return <Button onClick={onClick}>+</Button>
+const AddTradeButton = ({onClick}:Props) => {
+    return (
+        <Button onClick={onClick}>
+            <AddIcon/>
+        </Button>
+    )
 }
 
 export default AddTradeButton;
