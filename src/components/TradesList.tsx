@@ -4,13 +4,11 @@ import TradesListItem from './TradesListItem';
 
 const Grid = styled.div`
     display: grid;
+    box-sizing: border-box;
     align-self: start;
     grid-template-columns: repeat(10, auto);
-    margin-left: 24px;
     margin-right: 4px;
-    padding-top: 24px;
-    padding-right: 20px;
-    font-size: 16px;
+    padding: 24px;
     row-gap: 24px;
     overflow-y: auto;
     max-height: 100vh;
@@ -29,7 +27,7 @@ const Grid = styled.div`
     }
 
     &::-webkit-scrollbar {
-        width: 4px;        
+        width: 6px;
     }
 
 `
