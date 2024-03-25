@@ -1,9 +1,9 @@
 import { useMemo } from "react";
 import { useAddTrade, useDeleteTrade, useEditTrade } from "../hooks/tradeHooks";
-import { Trade, Transaction } from "../models/tradeModels";
+import { Trade, Position } from "../models/tradeModels";
 import { Dialog, Title, MainInfoGrid, PositionsGrid, PositionItemRow, AddPositionItemRow } from '../styles/TradeDialog.styles';
 import { useGenerateUUID } from "../hooks/uuidHooks";
-import { useGetTransactionsByTradeId, useRemoveTransactionsByTradeId, useSetTransactionsForTrade } from "../hooks/transactionHooks";
+import { useGetPositionsByTradeId, useRemovePositionsByTradeId, useSetPositionsForTrade } from "../hooks/positionHooks";
 import { useGetSelectedTrade } from "../hooks/selectedTradeHooks";
 import { convertDateToInputFormat } from "../utils/dateTimeUtils";
 import { useForm, SubmitHandler, useFieldArray } from "react-hook-form"
@@ -13,10 +13,10 @@ type FormData = {
     symbol:string,
     sl:number | undefined,
     tp:number | undefined,
-    positions:FormTransactionItem[]
+    positions:FormPositionItem[]
 }
 
-type FormTransactionItem = {
+type FormPositionItem = {
     id:string,
     type: 'buy' | 'sell',
     datetime:string | undefined,
@@ -30,7 +30,7 @@ type Props = {
     onTradeDeleted?: () => void
 }
 
-const defaultPosition:FormTransactionItem = {
+const defaultPosition:FormPositionItem = {
     id:'',
     type: "buy",
     datetime: undefined,
@@ -44,23 +44,23 @@ const TradeDialog = ({onTradeSaved, onTradeDeleted}:Props) => {
     const dispatchAddTrade = useAddTrade();
     const dispatchEditTrade = useEditTrade();
     const dispatchDeleteTrade = useDeleteTrade();
-    const dispatchSetTransactions = useSetTransactionsForTrade();
-    const dispatchDeleteTransactionsById = useRemoveTransactionsByTradeId();
+    const dispatchSetPositions = useSetPositionsForTrade();
+    const dispatchDeletePositionsById = useRemovePositionsByTradeId();
     const generateTradeId = useGenerateUUID();
 
     const trade = useGetSelectedTrade();
-    const transactions = useGetTransactionsByTradeId(trade?.id || '');
+    const positions = useGetPositionsByTradeId(trade?.id || '');
 
-    const formTransactions = useMemo<FormTransactionItem[]>(() => {
+    const formPositions = useMemo<FormPositionItem[]>(() => {
         if(trade) {
-            return transactions.map(transaction => ({
-                id: transaction.id,
-                tradeId: transaction.tradeId,
-                type: transaction.action,
-                datetime: transaction.datetime,
-                quantity: transaction.quantity,
-                price: transaction.price,
-                fee: transaction.fee
+            return positions.map(position => ({
+                id: position.id,
+                tradeId: position.tradeId,
+                type: position.action,
+                datetime: position.datetime,
+                quantity: position.quantity,
+                price: position.price,
+                fee: position.fee
             }));
         }
 
@@ -79,7 +79,7 @@ const TradeDialog = ({onTradeSaved, onTradeDeleted}:Props) => {
             price: undefined,
             fee: undefined
         }];
-    }, [trade, transactions, generateTradeId]);
+    }, [trade, positions, generateTradeId]);
 
     const { register, control, handleSubmit, getValues, setValue, watch, formState: { errors } } = useForm<FormData>({
         defaultValues: {
@@ -87,7 +87,7 @@ const TradeDialog = ({onTradeSaved, onTradeDeleted}:Props) => {
             symbol: trade?.symbol || '',
             sl: trade?.sl || undefined,
             tp: trade?.tp || undefined,
-            positions: formTransactions
+            positions: formPositions
         }
     });
 
@@ -116,8 +116,8 @@ const TradeDialog = ({onTradeSaved, onTradeDeleted}:Props) => {
             dispatchAddTrade(updatedTrade);
         }
         
-        const transactions = convertFormDataToTransactions(data, updatedTrade.id);
-        dispatchSetTransactions(updatedTrade.id, transactions);
+        const positions = convertFormDataToPositions(data, updatedTrade.id);
+        dispatchSetPositions(updatedTrade.id, positions);
         
         if(onTradeSaved) onTradeSaved();
     }
@@ -127,7 +127,7 @@ const TradeDialog = ({onTradeSaved, onTradeDeleted}:Props) => {
         if(!trade) return;
 
         dispatchDeleteTrade(trade);
-        dispatchDeleteTransactionsById(trade.id);
+        dispatchDeletePositionsById(trade.id);
         
         if(onTradeDeleted) onTradeDeleted();
     }
@@ -146,27 +146,27 @@ const TradeDialog = ({onTradeSaved, onTradeDeleted}:Props) => {
         return updatedTrade;
     }
 
-    const convertFormDataToTransactions = (data:FormData, tradeId:string) => {
+    const convertFormDataToPositions = (data:FormData, tradeId:string) => {
 
-        const transactions:Transaction[] = data.positions.map((position) => {
+        const positions:Position[] = data.positions.map((formPosition) => {
             
-            const date = position.datetime ? new Date(position.datetime) : new Date();
-            const transaction:Transaction = {
-                id:position.id,
+            const date = formPosition.datetime ? new Date(formPosition.datetime) : new Date();
+            const position:Position = {
+                id:formPosition.id,
                 tradeId:tradeId,
-                action:position.type,
+                action:formPosition.type,
                 datetime:convertDateToInputFormat(date),
-                price:position.price || 0,
-                quantity:position.quantity || 0,
-                fee:position.fee || 0
+                price:formPosition.price || 0,
+                quantity:formPosition.quantity || 0,
+                fee:formPosition.fee || 0
             }
 
-            return transaction;
+            return position;
         });
 
-        console.log(transactions);
+        console.log(positions);
 
-        return transactions;
+        return positions;
     }
 
     return <Dialog>

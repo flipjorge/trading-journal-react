@@ -1,9 +1,9 @@
 import { useDispatch, useSelector } from "react-redux"
 import { RootState } from "../store";
-import { Trade, Transaction } from "../models/tradeModels";
+import { Trade, Position } from "../models/tradeModels";
 import { useMemo } from "react";
 import { addTrade, removeTrade, updateTrade } from "../slices/tradesSlice";
-import { useGetTransactionsByTradeId } from "./transactionHooks";
+import { useGetPositionsByTradeId } from "./positionHooks";
 
 export const useGetAllTrades = () => {
     return useSelector((state:RootState) => state.trades);
@@ -17,7 +17,7 @@ export const useGetTradesBySymbol = (symbol:string) => {
 }
 
 export const useTradeFirstDate = (trade:Trade) => {
-    const transactions = useGetTransactionsByTradeId(trade.id);
+    const transactions = useGetPositionsByTradeId(trade.id);
     return useMemo(() => {
         if(!transactions || transactions.length === 0) return '-';
         return new Date(transactions[0].datetime).toLocaleDateString();
@@ -25,16 +25,16 @@ export const useTradeFirstDate = (trade:Trade) => {
 }
 
 export const useTradeEntryPrice = (trade:Trade) => {
-    const transactions = useGetTransactionsByTradeId(trade.id);
+    const transactions = useGetPositionsByTradeId(trade.id);
     return useMemo(() => {
         return transactions[0]?.price || '-';
     }, [transactions]);
 }
 
 export const useTradeTotalQuantity = (trade:Trade) => {
-    const transactions = useGetTransactionsByTradeId(trade.id);
+    const transactions = useGetPositionsByTradeId(trade.id);
     return useMemo(() => {
-        return transactions.reduce((total:number, transaction:Transaction) => {
+        return transactions.reduce((total:number, transaction:Position) => {
             if(transaction.action === 'buy') return total + transaction.quantity;
             return total - transaction.quantity;
         }, 0);
@@ -42,7 +42,7 @@ export const useTradeTotalQuantity = (trade:Trade) => {
 }
 
 export const useTradeEntryTotal = (trade:Trade) => {
-    const transactions = useGetTransactionsByTradeId(trade.id);
+    const transactions = useGetPositionsByTradeId(trade.id);
     return useMemo(() => {
         if(!transactions || transactions.length === 0) return '-';
         return transactions[0].price * transactions[0].quantity;

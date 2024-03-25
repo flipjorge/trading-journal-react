@@ -5,7 +5,7 @@ export type Trade = {
     tp: number | undefined
 }
 
-export type Transaction = {
+export type Position = {
     id: string,
     tradeId: string,
     action: 'buy' | 'sell',

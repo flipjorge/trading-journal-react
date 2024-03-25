@@ -1,7 +1,7 @@
-import { Transaction } from "../models/tradeModels";
+import { Position } from "../models/tradeModels";
 import { convertDateToInputFormat } from "../utils/dateTimeUtils";
 
-export const dummyTransactionsData:Transaction[] = [
+export const dummyPositionsData:Position[] = [
     {
         id:'0',
         tradeId:'0',
