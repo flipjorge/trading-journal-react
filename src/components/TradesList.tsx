@@ -6,9 +6,32 @@ const Grid = styled.div`
     display: grid;
     align-self: start;
     grid-template-columns: repeat(10, auto);
-    margin: 24px 24px 0 24px;
+    margin-left: 24px;
+    margin-right: 4px;
+    padding-top: 24px;
+    padding-right: 20px;
     font-size: 16px;
     row-gap: 24px;
+    overflow-y: auto;
+    max-height: 100vh;
+
+    &::-webkit-scrollbar-track {
+        background-color: ${props => props.theme.primaryBackground};
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: ${props => props.theme.secondaryBackground};
+        border-radius: 10px;
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+        background: white;
+    }
+
+    &::-webkit-scrollbar {
+        width: 4px;        
+    }
+
 `
 
 const HeadRow = styled.div`
