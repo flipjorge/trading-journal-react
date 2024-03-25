@@ -1,6 +1,6 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { Trade } from '../models/tradeModels';
-import { dummyData } from '../data/dummyTradesData2';
+import { dummyData } from '../data/dummyTradesData';
 
 const tradesSlice = createSlice({
     name: 'trades',
