@@ -117,6 +117,7 @@ const TradeDialog = () => {
         }
         
         const positions = convertFormDataToPositions(data, updatedTrade.id);
+        console.log(positions);
         dispatchSetPositions(updatedTrade.id, positions);
         
         dispatchClearSelectedTrade();
@@ -143,8 +144,6 @@ const TradeDialog = () => {
             tp:data.tp
         }
 
-        console.log(updatedTrade);
-
         return updatedTrade;
     }
 
@@ -158,15 +157,15 @@ const TradeDialog = () => {
                 tradeId:tradeId,
                 action:formPosition.type,
                 datetime:convertDateToInputFormat(date),
-                price:formPosition.price || 0,
-                quantity:formPosition.quantity || 0,
-                fee:formPosition.fee || 0
+                price:Number(formPosition.price),
+                quantity:Number(formPosition.quantity),
+                fee:Number(formPosition.fee)
             }
+
+            console.log(typeof position.price);
 
             return position;
         });
-
-        console.log(positions);
 
         return positions;
     }

@@ -1,59 +1,51 @@
-import styled from "styled-components";
+
 import { Trade } from "../models/tradeModels";
-import { useTradeEntryPrice, useTradeEntryTotal,
-    useTradeFirstDate, useTradeTotalQuantity } from "../hooks/tradeHooks";
+import { useTradeEntryAverage,
+    useTradeHoldTime,
+    useTradeOpenDate,
+    useTradeReturn,
+    useTradeSide,
+    useTradeStatus,
+    useTradeQuantityBought, 
+    useTradeExitAverage,
+    useTradeReturnPercentage} from "../hooks/tradeHooks";
+import * as Styles from '../styles/TradesListItem.styles';
+import SideIcon from '../assets/type-arrow-icon.svg?react';
+import { convertDateToDurationToNow, convertDateToString, convertNumberToCurrency, convertNumberToPercentage } from "../utils/formatUtils";
 
-const Item = styled.div`
-    display: contents;
-    cursor: pointer;
-    
-    div {
-        display: flex;
-        align-items: center;
-        box-sizing: border-box;
-        height: 86px;
-        padding: 26px 4px;
-        background-color: ${props => props.theme.secondaryBackground};
-    }
-
-    div:first-child {
-        border-radius: 10px 0 0 10px;
-        padding-left: 36px;
-    }
-
-    div:last-child {
-        border-radius: 0 10px 10px 0;
-    }
-`
-
-type TradeListItemProps = {
+type props = {
     trade:Trade,
     onSelected?:(trade:Trade) => void
 }
 
-const TradesListItem = ({trade, onSelected}:TradeListItemProps) => {
+const TradesListItem = ({trade, onSelected}:props) => {
 
-    const date = useTradeFirstDate(trade);
-    const entryPrice = useTradeEntryPrice(trade);
-    const entryTotal = useTradeEntryTotal(trade);
-    const totalQuantity = useTradeTotalQuantity(trade);
+    const date = useTradeOpenDate(trade);
+    const tradeReturn = useTradeReturn(trade);
+    const status = useTradeStatus(trade);
+    const side = useTradeSide(trade);
+    const holdDuration = useTradeHoldTime(trade);
+    const entryAveragePrice = useTradeEntryAverage(trade);
+    const exitAveragePrice = useTradeExitAverage(trade);
+    const quantityBought = useTradeQuantityBought(trade);
+    const returnPercentage = useTradeReturnPercentage(trade);
 
     const handleItemClick = () => {
         if(onSelected) onSelected(trade);
     }
 
-    return <Item onClick={handleItemClick}>
-        <div>{date}</div>
-        <div>{trade.symbol}</div>
-        <div>{entryPrice}</div>
-        <div>{entryTotal}</div>
-        <div>{totalQuantity}</div>
-        <div>{totalQuantity}</div>
-        <div>{totalQuantity}</div>
-        <div>{totalQuantity}</div>
-        <div>{totalQuantity}</div>
-        <div>{totalQuantity}</div>
-    </Item>
+    return <Styles.Row onClick={handleItemClick}>
+        <Styles.Cell>{convertDateToString({value:date, formatString:"dd MMM"})}</Styles.Cell>
+        <Styles.Cell>{trade.symbol.toUpperCase()}</Styles.Cell>
+        <Styles.Cell><Styles.StatusField $state={status}>{status}</Styles.StatusField></Styles.Cell>
+        <Styles.Cell><Styles.SideField $side={side}><SideIcon/></Styles.SideField></Styles.Cell>
+        <Styles.Cell>{convertDateToDurationToNow({value:holdDuration})}</Styles.Cell>
+        <Styles.Cell>{quantityBought}</Styles.Cell>
+        <Styles.Cell>{convertNumberToCurrency({value:entryAveragePrice})}</Styles.Cell>
+        <Styles.Cell>{convertNumberToCurrency({value:exitAveragePrice})}</Styles.Cell>
+        <Styles.Cell>{convertNumberToCurrency({value:tradeReturn})}</Styles.Cell>
+        <Styles.Cell>{convertNumberToPercentage({value:returnPercentage})}</Styles.Cell>
+    </Styles.Row>
 };
 
 export default TradesListItem;
