@@ -1,10 +1,5 @@
 import styled from "styled-components";
 
-export const Row = styled.div`
-    display: contents;
-    cursor: pointer;
-`
-
 export const Cell = styled.div`
     display: flex;
     align-items: center;
@@ -12,14 +7,37 @@ export const Cell = styled.div`
     height: 86px;
     padding: 26px 4px;
     background-color: ${props => props.theme.secondaryBackground};
+    border-top: 3px solid transparent;
+    border-bottom: 3px solid transparent;
 
     &:first-child {
+        border-left: 3px solid transparent;
         border-radius: 10px 0 0 10px;
-        padding-left: 36px;
+        padding-left: 33px;
     }
 
     &:last-child {
+        border-right: 3px solid transparent;
         border-radius: 0 10px 10px 0;
+    }
+`
+
+export const Row = styled.div`
+    display: contents;
+    cursor: pointer;
+
+    &:hover ${Cell} {
+        background-color: ${props => props.theme.hoverBackground};
+        border-top: 3px solid ${props => props.theme.hover};
+        border-bottom: 3px solid ${props => props.theme.hover};
+    }
+
+    &:hover ${Cell}:first-child {
+        border-left: 3px solid ${props => props.theme.hover};
+    }
+
+    &:hover ${Cell}:last-child {
+        border-right: 3px solid ${props => props.theme.hover};
     }
 `
 

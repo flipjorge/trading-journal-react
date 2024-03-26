@@ -17,7 +17,7 @@ const Button = styled.a`
     }
 
     &:hover{
-        stroke: ${props => props.theme.iconsHover};
+        stroke: ${props => props.theme.hover};
     }
 `
 

@@ -3,6 +3,8 @@ const DarkTheme = {
     secondaryBackground: "#0B111C",
     default: "#FFF",
     label: "#59636F",
+    hover: "#0079FF",
+    hoverBackground: "#0079FF33",
     winBackground: "#1EAF8333",
     lossBackground: "#E6658433",
     winFont: "#23D39E",
@@ -10,7 +12,6 @@ const DarkTheme = {
     action: "#0079FF",
     dangerAction: "#E6658433",
     icons: "#FFF",
-    iconsHover: "#0079FF",
     border: "#1D273B",
     skeleton: "#2E4163",
 }

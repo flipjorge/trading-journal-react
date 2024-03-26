@@ -55,7 +55,7 @@ export const ClosePositionButton = styled.button`
     }
 
     &:hover {
-        stroke: ${props => props.theme.iconsHover};
+        stroke: ${props => props.theme.hover};
     }
 `
 
@@ -123,8 +123,8 @@ export const AddPositionButton = styled.button`
     }
 
     &:hover {
-        stroke: ${props => props.theme.iconsHover};
-        border: 2px dashed ${props => props.theme.iconsHover};
+        stroke: ${props => props.theme.hover};
+        border: 2px dashed ${props => props.theme.hover};
     }
 `
 
