@@ -37,7 +37,7 @@ const TradesListItem = ({trade, onSelected}:props) => {
     return <Styles.Row onClick={handleItemClick}>
         <Styles.Cell>{convertDateToString({value:date, formatString:"dd MMM"})}</Styles.Cell>
         <Styles.Cell>{trade.symbol.toUpperCase()}</Styles.Cell>
-        <Styles.Cell><Styles.StatusField $state={status}>{status}</Styles.StatusField></Styles.Cell>
+        <Styles.Cell><Styles.StatusField $state={status}>{status || '-'}</Styles.StatusField></Styles.Cell>
         <Styles.Cell><Styles.SideField $side={side}><SideIcon/></Styles.SideField></Styles.Cell>
         <Styles.Cell>{convertDateToDurationToNow({value:holdDuration})}</Styles.Cell>
         <Styles.Cell>{quantityBought}</Styles.Cell>
