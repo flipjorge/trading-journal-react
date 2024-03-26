@@ -4,6 +4,7 @@ import { Trade, Position } from "../models/tradeModels";
 import { useMemo } from "react";
 import { addTrade, removeTrade, updateTrade } from "../slices/tradesSlice";
 import { useGetPositionsByTradeId } from "./positionHooks";
+import { format } from "date-fns";
 
 export const useGetAllTrades = () => {
     return useSelector((state:RootState) => state.trades);
@@ -20,7 +21,7 @@ export const useTradeFirstDate = (trade:Trade) => {
     const transactions = useGetPositionsByTradeId(trade.id);
     return useMemo(() => {
         if(!transactions || transactions.length === 0) return '-';
-        return new Date(transactions[0].datetime).toLocaleDateString();
+        return format(new Date(transactions[0].datetime), "dd MMM");
     }, [transactions]);
 }
 
