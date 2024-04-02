@@ -1,5 +1,6 @@
 export type Trade = {
     id: string,
+    portfolioId: string,
     symbol: string,
     sl: number | undefined,
     tp: number | undefined
