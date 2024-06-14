@@ -9,6 +9,13 @@ export const useGetAllTrades = () => {
     return useSelector((state:RootState) => state.trades);
 }
 
+export const useGetTradesByPortfolio = (id:string) => {
+    const trades = useGetAllTrades();
+    return useMemo(() =>
+        trades.filter(trade => trade.portfolioId === id)
+    ,[trades, id]);
+}
+
 export const useGetTradesBySymbol = (symbol:string) => {
     const trades = useGetAllTrades();
     return useMemo(() =>

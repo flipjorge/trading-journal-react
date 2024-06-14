@@ -10,6 +10,7 @@ import { useForm, SubmitHandler, useFieldArray } from "react-hook-form"
 import { useCloseDialog } from "../hooks/dialogHooks";
 import AddIcon from "../assets/add-icon-no-border.svg?react";
 import RemoveIcon from "../assets/remove-icon.svg?react";
+import { useGetSelectedPortfolio } from "../hooks/selectedPortfolioHooks";
 
 type FormData = {
     id:string,
@@ -48,6 +49,7 @@ const TradeDialog = () => {
     const dispatchCloseTradeDialog = useCloseDialog('trade');
     const generateTradeId = useGenerateUUID();
 
+    const portfolio = useGetSelectedPortfolio();
     const trade = useGetSelectedTrade();
     const positions = useGetPositionsByTradeId(trade?.id || '');
 
@@ -139,6 +141,7 @@ const TradeDialog = () => {
         
         const updatedTrade:Trade = {
             id:data.id,
+            portfolioId:portfolio?.id,
             symbol:data.symbol,
             sl:data.sl,
             tp:data.tp
