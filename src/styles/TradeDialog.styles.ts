@@ -7,7 +7,6 @@ export const Dialog = styled.div`
 `
 
 export const Title = styled.div`
-    box-sizing: border-box;
     height: 90px;
     padding: 28px 0 28px 50px;
     background-color: ${props => props.theme.primaryBackground};
@@ -28,7 +27,6 @@ export const Label = styled.div<{$span?:number}>`
 `
 
 export const Input = styled.input`
-    box-sizing: border-box;
     background-color: ${props => props.theme.primaryBackground};
     color: ${props => props.theme.default};
     font-size: 1.1rem;

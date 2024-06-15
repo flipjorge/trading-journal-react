@@ -4,7 +4,6 @@ import TradesListItem from './TradesListItem';
 
 const Grid = styled.div`
     display: grid;
-    box-sizing: border-box;
     align-self: start;
     grid-template-columns: repeat(10, auto);
     margin-right: 4px;

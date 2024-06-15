@@ -3,7 +3,6 @@ import styled from "styled-components";
 export const Cell = styled.div`
     display: flex;
     align-items: center;
-    box-sizing: border-box;
     height: 86px;
     padding: 26px 4px;
     background-color: ${props => props.theme.secondaryBackground};
