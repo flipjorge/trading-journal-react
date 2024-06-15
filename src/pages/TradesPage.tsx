@@ -4,6 +4,8 @@ import { Trade } from "../models/tradeModels";
 import { useOpenDialog } from "../hooks/dialogHooks";
 import { useSetSelectedTrade } from "../hooks/selectedTradeHooks";
 import { useGetSelectedPortfolio } from "../hooks/selectedPortfolioHooks";
+import { PortfolioHeader } from "../components/PortfolioHeader";
+import * as Styles from "../styles/TradesPage.styles";
 
 
 const TradesPage = () => {
@@ -19,9 +21,12 @@ const TradesPage = () => {
         openTradeDialog();
     }
 
-    return <>
-        <TradesList trades={trades} onTradeSelected={handleTradeSelected}/>
-    </>;
+    return (
+        <Styles.Container>
+            <PortfolioHeader/>
+            <TradesList trades={trades} onTradeSelected={handleTradeSelected}/>
+        </Styles.Container>
+    );
 }
 
 export default TradesPage;

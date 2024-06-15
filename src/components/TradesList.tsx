@@ -6,8 +6,8 @@ const Grid = styled.div`
     display: grid;
     align-self: start;
     grid-template-columns: repeat(10, auto);
+    width: 100%;
     margin-right: 4px;
-    padding: 24px;
     row-gap: 24px;
     overflow-y: auto;
     max-height: 100vh;
