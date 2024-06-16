@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux"
 import { RootState } from "../store";
 import { useMemo } from "react";
-import { Position } from "../models/tradeModels";
+import { Position, Trade } from "../models/tradeModels";
 import { addPosition, updatePosition, removePosition, addPositions,
     updatePositions, removePositionsByTradeId, setPositionsForTrade } from "../slices/positionsSlice";
 
@@ -11,9 +11,19 @@ export const useGetAllPositions = () => {
 
 export const useGetPositionsByTradeId = (tradeId:string) => {
     const positions = useGetAllPositions();
+
     return useMemo(() => {
         return positions.filter(position => position.tradeId === tradeId);
     }, [positions, tradeId]);
+}
+
+export const useGetPositionsByTrades = (trades:Trade[]) => {
+    const positions = useGetAllPositions();
+    const tradesIds = trades.map(trade => trade.id);
+
+    return useMemo(() => {
+        return positions.filter(position => tradesIds.includes(position.tradeId));
+    }, [tradesIds]);
 }
 
 export const useAddPosition = () => {

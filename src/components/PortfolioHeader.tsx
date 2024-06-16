@@ -1,6 +1,13 @@
+import { usePortfolioBalance } from "../hooks/portfolioHooks";
+import { useGetSelectedPortfolio } from "../hooks/selectedPortfolioHooks";
 import * as Styles from "../styles/PortfolioHeader.styles";
+import { convertNumberToCurrency } from "../utils/formatUtils";
 
 export const PortfolioHeader = () => {
+
+    const portfolio = useGetSelectedPortfolio();
+    const portfolioBalance = usePortfolioBalance(portfolio.id);
+
     return (
         <Styles.Container>
             <Styles.ItemsContainer>
@@ -9,7 +16,9 @@ export const PortfolioHeader = () => {
                         Account Balance
                     </Styles.ItemLabel>
                     <Styles.ItemValue>
-                        $4,146.50
+                        {convertNumberToCurrency({
+                            value: portfolioBalance
+                        })}
                     </Styles.ItemValue>
                 </Styles.Item>
                 <Styles.Item>
