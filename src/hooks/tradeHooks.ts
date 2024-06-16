@@ -63,22 +63,22 @@ export const useTradeReturn = (trade:Trade):number | null => {
 
         const firstTradeAction = positions[0].action;
 
-        const quantity = positions.reduce((currentQuantity, transaction) => {
-            if(transaction.action === firstTradeAction){
-                return currentQuantity + transaction.quantity;
+        const quantity = positions.reduce((currentQuantity, position) => {
+            if(position.action === firstTradeAction){
+                return currentQuantity + position.quantity;
             }
 
-            return currentQuantity - transaction.quantity;
+            return currentQuantity - position.quantity;
         }, 0);
 
         if(quantity > 0) return null;
 
-        return positions.reduce((currentRevenue, transaction) => {
-            if(transaction.action === firstTradeAction){
-                return currentRevenue - (transaction.price * transaction.quantity) - transaction.fee;
+        return positions.reduce((currentRevenue, position) => {
+            if(position.action === firstTradeAction){
+                return currentRevenue - (position.price * position.quantity) - position.fee;
             }
 
-            return currentRevenue + (transaction.price * transaction.quantity) - transaction.fee;
+            return currentRevenue + (position.price * position.quantity) - position.fee;
         }, 0);
 
     }, [positions]);
@@ -91,6 +91,48 @@ export const useTradeStatus = (trade:Trade):'win' | 'loss' | null => {
         if(!tradeReturn) return null;
         return tradeReturn >= 0 ? 'win' : 'loss';
     }, [tradeReturn]);
+}
+
+export const useTradesWinRate = (trades:Trade[]) => {
+    const positions = useGetPositionsByTrades(trades);
+
+    return useMemo(() => {
+        if(!positions || positions.length === 0) return null;
+
+        let totalClosedTrades = 0;
+
+        const wins = trades.reduce((currentWins, trade) => {
+
+            const tradePositions = positions.filter(position => position.tradeId === trade.id);
+            const firstTradeAction = tradePositions[0].action;
+
+            const quantity = tradePositions.reduce((currentQuantity, position) => {
+                if(position.action === firstTradeAction){
+                    return currentQuantity + position.quantity;
+                }
+    
+                return currentQuantity - position.quantity;
+            }, 0);
+    
+            if(quantity > 0) return currentWins;
+
+            totalClosedTrades++;
+    
+            const revenue = tradePositions.reduce((currentRevenue, position) => {
+                if(position.action === firstTradeAction){
+                    return currentRevenue - (position.price * position.quantity) - position.fee;
+                }
+    
+                return currentRevenue + (position.price * position.quantity) - position.fee;
+            }, 0);
+
+            return currentWins + (revenue >= 0 ? 1 : 0);
+
+        }, 0);
+
+        return wins / totalClosedTrades;
+
+    }, [positions]);
 }
 
 export const useTradeSide = (trade:Trade):'long' | 'short' | null => {
@@ -115,9 +157,9 @@ export const useTradeQuantityBought = (trade:Trade) => {
         if(!positions || positions.length === 0) return null;
         const firstTradeAction = positions[0].action;
 
-        return positions.reduce((spent:number, transaction:Position) => {
-            if(transaction.action !== firstTradeAction) return spent;
-            return spent + transaction.quantity;
+        return positions.reduce((spent:number, position:Position) => {
+            if(position.action !== firstTradeAction) return spent;
+            return spent + position.quantity;
         }, 0);
     }, [positions]);
 }
@@ -125,9 +167,9 @@ export const useTradeQuantityBought = (trade:Trade) => {
 export const useTradeTotalQuantity = (trade:Trade) => {
     const positions = useGetPositionsByTradeId(trade.id);
     return useMemo(() => {
-        return positions.reduce((total:number, transaction:Position) => {
-            if(transaction.action === 'buy') return total + transaction.quantity;
-            return total - transaction.quantity;
+        return positions.reduce((total:number, position:Position) => {
+            if(position.action === 'buy') return total + position.quantity;
+            return total - position.quantity;
         }, 0);
     }, [positions]);
 }
@@ -139,14 +181,14 @@ export const useTradeEntryAverage = (trade:Trade) => {
 
         const firstTradeAction = positions[0].action;
 
-        const totalQuantity = positions.reduce((quantity, transaction) => {
-            if(transaction.action !== firstTradeAction) return quantity;
-            return quantity + transaction.quantity;
+        const totalQuantity = positions.reduce((quantity, position) => {
+            if(position.action !== firstTradeAction) return quantity;
+            return quantity + position.quantity;
         }, 0);
         
-        const totalSpent = positions.reduce((spent, transaction) => {
-            if(transaction.action !== firstTradeAction) return spent;
-            return spent + (transaction.quantity * transaction.price);
+        const totalSpent = positions.reduce((spent, position) => {
+            if(position.action !== firstTradeAction) return spent;
+            return spent + (position.quantity * position.price);
         }, 0);
 
         return totalSpent / totalQuantity;
@@ -160,14 +202,14 @@ export const useTradeExitAverage = (trade:Trade) => {
 
         const firstTradeAction = positions[0].action;
 
-        const totalQuantity = positions.reduce((quantity, transaction) => {
-            if(transaction.action === firstTradeAction) return quantity;
-            return quantity + transaction.quantity;
+        const totalQuantity = positions.reduce((quantity, position) => {
+            if(position.action === firstTradeAction) return quantity;
+            return quantity + position.quantity;
         }, 0);
         
-        const totalSpent = positions.reduce((spent, transaction) => {
-            if(transaction.action === firstTradeAction) return spent;
-            return spent + transaction.quantity * transaction.price;
+        const totalSpent = positions.reduce((spent, position) => {
+            if(position.action === firstTradeAction) return spent;
+            return spent + position.quantity * position.price;
         }, 0);
 
         if(totalQuantity === 0) return null;
@@ -182,24 +224,24 @@ export const useTradeReturnPercentage = (trade:Trade) => {
 
         const firstTradeAction = positions[0].action;
 
-        const currentQuantity = positions.reduce((quantity, transaction) => {
-            if(transaction.action === firstTradeAction){
-                return quantity + transaction.quantity;
+        const currentQuantity = positions.reduce((quantity, position) => {
+            if(position.action === firstTradeAction){
+                return quantity + position.quantity;
             }
 
-            return quantity - transaction.quantity;
+            return quantity - position.quantity;
         }, 0);
 
         if(currentQuantity > 0) return null;
 
-        const totalSpent = positions.reduce((spent, transaction) => {
-            if(transaction.action !== firstTradeAction) return spent;
-            return spent + transaction.quantity * transaction.price;
+        const totalSpent = positions.reduce((spent, position) => {
+            if(position.action !== firstTradeAction) return spent;
+            return spent + position.quantity * position.price;
         }, 0);
 
-        const totalSold = positions.reduce((sold, transaction) => {
-            if(transaction.action === firstTradeAction) return sold;
-            return sold + transaction.quantity * transaction.price;
+        const totalSold = positions.reduce((sold, position) => {
+            if(position.action === firstTradeAction) return sold;
+            return sold + position.quantity * position.price;
         }, 0);
         return totalSold / totalSpent - 1;
     }, [positions]);

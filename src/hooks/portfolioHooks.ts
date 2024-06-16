@@ -3,7 +3,7 @@ import { RootState } from "../store"
 import { useMemo } from "react";
 import { Portfolio } from "../models/portfolioModels";
 import { addPortfolio, removePortfolio, updatePortfolio } from "../slices/portfoliosSlice";
-import { useGetTradesByPortfolio, useTradesBalance } from "./tradeHooks";
+import { useGetTradesByPortfolio, useTradesBalance, useTradesWinRate } from "./tradeHooks";
 
 export const useGetAllPortfolios = () => {
     return useSelector((state:RootState) => state.portfolios);
@@ -24,6 +24,16 @@ export const usePortfolioBalance = (id:string) => {
     const trades = useGetTradesByPortfolio(portfolio.id);
 
     return useTradesBalance(trades);
+}
+
+export const usePortfolioWinRate = (id:string) => {
+    const portfolio = useGetPortfolioById(id);
+
+    if(!portfolio) return null;
+
+    const trades = useGetTradesByPortfolio(portfolio.id);
+
+    return useTradesWinRate(trades);
 }
 
 export const useAddPortfolio = () => {

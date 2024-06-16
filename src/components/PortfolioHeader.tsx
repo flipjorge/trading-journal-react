@@ -1,12 +1,13 @@
-import { usePortfolioBalance } from "../hooks/portfolioHooks";
+import { usePortfolioBalance, usePortfolioWinRate } from "../hooks/portfolioHooks";
 import { useGetSelectedPortfolio } from "../hooks/selectedPortfolioHooks";
 import * as Styles from "../styles/PortfolioHeader.styles";
-import { convertNumberToCurrency } from "../utils/formatUtils";
+import { convertNumberToCurrency, convertNumberToPercentage } from "../utils/formatUtils";
 
 export const PortfolioHeader = () => {
 
     const portfolio = useGetSelectedPortfolio();
     const portfolioBalance = usePortfolioBalance(portfolio.id);
+    const portfolioWinRate = usePortfolioWinRate(portfolio.id);
 
     return (
         <Styles.Container>
@@ -26,7 +27,9 @@ export const PortfolioHeader = () => {
                         Winrate
                     </Styles.ItemLabel>
                     <Styles.ItemValue>
-                        66%
+                        {convertNumberToPercentage({
+                            value:portfolioWinRate
+                        })}
                     </Styles.ItemValue>
                 </Styles.Item>
             </Styles.ItemsContainer>
