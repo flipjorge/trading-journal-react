@@ -2,6 +2,7 @@ import { usePortfolioBalance, usePortfolioWinRate } from "../hooks/portfolioHook
 import { useGetSelectedPortfolio } from "../hooks/selectedPortfolioHooks";
 import * as Styles from "../styles/PortfolioHeader.styles";
 import { convertNumberToCurrency, convertNumberToPercentage } from "../utils/formatUtils";
+import { PortfolioSelect } from "./PortfolioSelect";
 
 export const PortfolioHeader = () => {
 
@@ -33,6 +34,7 @@ export const PortfolioHeader = () => {
                     </Styles.ItemValue>
                 </Styles.Item>
             </Styles.ItemsContainer>
+            <PortfolioSelect/>
         </Styles.Container>
     )
 }
