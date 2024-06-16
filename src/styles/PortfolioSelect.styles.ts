@@ -51,6 +51,22 @@ export const Item = styled(Select.Item)`
     };
 `
 
+export const ManagePortfolioItem = styled.div`
+    color:white;
+    padding: 12px 21px;
+    border: 1.5px solid transparent;
+
+    &:last-child {
+        border-radius: 0 0 15px 15px;
+    }
+
+    &:hover {
+        background-color: ${props => props.theme.hoverBackground};
+        border-color: ${props => props.theme.hover};
+        outline: none;
+    }
+`
+
 export const Icon = styled(Select.Icon)`
     stroke: white;
 
